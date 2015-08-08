@@ -1,0 +1,31 @@
+{
+    "project_type": "javascript",
+
+    "debugMode" : 1,
+    "showFPS" : false,
+    "frameRate" : 60,
+    "id" : "gameCanvas",
+    "renderMode" : 0,
+    "engineDir":"frameworks/cocos2d-html5",
+
+    "modules" : ["cocos2d", "ccui", "gui"],
+
+    "jsList" : [
+        "src/libs/underscore-min.js",
+        "src/libs/backbone-min.js",
+        "src/libs/firebase.js",
+        "src/libs/moment.min.js",
+        "src/libs/zh-cn.js",
+        "src/libs/utils.js",
+        "src/resource.js",
+        "src/colony-model.js",
+        "src/ship-model.js",
+        "src/star-model.js",
+        "src/log-model.js",
+        "src/game-model.js",
+        "src/tech-model.js",
+        "src/level-up.js",
+        "src/app.js",
+        "src/gameover.js"
+    ]
+}

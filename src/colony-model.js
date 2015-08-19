@@ -55,7 +55,10 @@ var ColonyModel = Backbone.Model.extend({
 
             plant: null,
 
-            crisisRate: {
+            currentDisaster: null,
+            disasterCountDown: 0,
+
+            disasterRate: {
                 ai: 0,
                 asteroid: 0,
                 environment: 0,
@@ -63,7 +66,7 @@ var ColonyModel = Backbone.Model.extend({
                 virus: 0,
                 war: 0
             },
-            crisisResistance: {
+            disasterResistance: {
                 ai: 0,
                 asteroid: 0,
                 environment: 0,
@@ -71,7 +74,7 @@ var ColonyModel = Backbone.Model.extend({
                 virus: 0,
                 war: 0
             },
-            crisisEffectYear: {
+            disasterEffectYear: {
                 ai: 0,
                 asteroid: 0,
                 environment: 0,
@@ -83,19 +86,27 @@ var ColonyModel = Backbone.Model.extend({
             launchRate: 0
         }
     },
+    initialize:function(){
+        this._launchAccumulate = 0;
+        this._warAccumulate = 0;
+    },
     evaluate:function(){
         this._evaluateMaxPopulation();
         this._evaluatePopulationGrowRate();
-        this._evaluateScienceGenerateRate();
         this._generatePopulation();
         this._generateScience();
         this._evaluateLaunchRate();
         if ( this._canLaunch() ) {
             this._launch();
         }
+        this._evaluateDisaster();
     },
     _canLaunch:function(){
-        return Math.random() < this.get("launchRate");
+        this._launchAccumulate += this.get("launchRate");
+        if ( this._launchAccumulate >= 1 ) {
+            this._launchAccumulate = 0;
+            return true;
+        } else return false;
     },
     _launch:function(){
         var destStar = null;
@@ -134,7 +145,7 @@ var ColonyModel = Backbone.Model.extend({
         }
 
         if ( destStar ) {
-            var immigrant = 1;
+            var immigrant = gameModel.get("shipCapacity");
             var ship = new ShipModel({
                 population: immigrant
             });
@@ -146,9 +157,6 @@ var ColonyModel = Backbone.Model.extend({
             window.gameModel.addShip(ship);
         } else {
             //all star is full?
-            if ( allFull ) {
-                gameModel.trigger("gameover",gameModel);
-            }
         }
     },
     getLaunchRateEffectText:function(){
@@ -158,18 +166,79 @@ var ColonyModel = Backbone.Model.extend({
     getCrisisRateEffectText:function(type){
     },
     _evaluateMaxPopulation:function(){
-
+        var maxPopulation = this.get("maxPopulation");
+        maxPopulation = gameModel.techEffect("maxPopulation", maxPopulation);
+        this.set("maxPopulation",maxPopulation);
     },
     _evaluatePopulationGrowRate:function(){
         var currentPopulation = this.get("population");
         var maxPopulation = this.get("maxPopulation");
         var rate = 0;
-        if ( currentPopulation > maxPopulation ) {
-            rate = 0;
+        if ( this.get("currentDisasterType") ) {
+            rate = 0.01;
+            rate = gameModel.techEffect("disasterPopulationGrowRate", rate);
         } else {
-            rate = 1;
+            if (currentPopulation >= maxPopulation) {
+                rate = 0;
+            } else {
+                rate = 1;
+                rate = gameModel.techEffect("populationGrowRate", rate);
+            }
         }
         this.set("populationGrowRate",rate);
+    },
+    hasDisaster:function(){
+
+    },
+    shortenDisaster:function(){
+        if ( this.get("currentDisasterType") ) {
+            this.set("disasterCountDown",this.get("disasterCountDown")-1);
+            if ( this.get("disasterCountDown") <= 0 ) {
+                this.set({
+                    currentDisasterType: null
+                });
+            }
+            return true;
+        } else {
+            return false;
+        }
+    },
+    _evaluateDisaster:function(){
+        if ( !this.shortenDisaster() ) {
+            this._evaluateWarDisaster();
+        }
+    },
+    _evaluateWarDisaster:function(){
+        var currentPopulation = this.get("population");
+        var maxPopulation = this.get("maxPopulation");
+        var rate = 0;
+        if ( currentPopulation >= maxPopulation ) {
+            rate = gameModel.get("maxPopulationIncreaseWarRate");
+        }
+        rate = gameModel.techEffect("warRate", rate);
+        this._warAccumulate += rate;
+        if ( this._warAccumulate >= 1 ) {
+            this._warAccumulate = 0;
+            var value = this.get("population") * (Math.random()*0.5);
+            this.losePopulation(value);
+            var countDown = Math.round(Math.random()*20)+10;
+            countDown = adjust = gameModel.techEffect("disasterLength", countDown);
+            this.set({
+                currentDisasterType: "war",
+                disasterCountDown : countDown
+                });
+            gameModel.trigger("disaster", {
+                type: "war",
+                colony: this,
+                populationLose : value,
+                effectLength: countDown
+            });
+        }
+    },
+    losePopulation:function(value){
+        var currentPopulation = this.get("population");
+        window.gameModel.getPopulation(-value);
+        this.set("population", currentPopulation - value);
     },
     _generatePopulation:function(){
         var currentPopulation = this.get("population");
@@ -187,28 +256,44 @@ var ColonyModel = Backbone.Model.extend({
         }
     },
     _evaluateLaunchRate:function(){
-        var launchRate = 0.01;
-        if ( this.get("population") > this.get("maxPopulation") )
-            launchRate += 0.1;
-        this.set("launchRate", launchRate);
-    },
-    _evaluateScienceGenerateRate:function(){
-        var rate = this.get("population") / 10000 * 0.01 ;
-        this.set("scienceGenerateRate", rate);
+        if ( gameModel.get("shipCapacity") > this.get("population") ) {
+            this.set("launchRate", 0);
+            return;
+        }
+        var production;
+        if ( this.get("currentDisasterType") ) {
+            production = 0;
+        } else {
+            production = this.get("population") / 10000000;
+
+            var rate = 1;
+            rate = gameModel.techEffect("launchRate", rate);
+            if ( this.get("population") >= this.get("maxPopulation") )
+                rate += gameModel.get("maxPopulationIncreaseLaunchRate");
+
+            production *= rate;
+
+            //TODO gravity adjust
+        }
+        this.set("launchRate", production);
     },
     _generateScience:function(){
-        if (this.get("scienceGenerateRate") > Math.random() ) {
-            window.gameModel.getScience(1);
+        var adjust = 1;
+        if ( this.get("currentDisasterType") ) {
+            adjust = 0;
+        } else {
+            adjust = gameModel.techEffect("scienceAdjust", adjust);
         }
-    },
-    generateDNA:function(){
-
-    },
-    generateMind:function(){
-
-    },
-    onDisaster:function(){
-
+        if ( adjust != 0 ) {
+            var science = this.get("population") / 1000000 ;
+            science *= adjust;
+            if ( mainLayer._scienceIconNumber < MAX_SCIENCE_ICON && Math.random() < science / 10 ) {
+                if ( science > 1 ) science -= 1;
+                else science = 0;
+                this.trigger("showScienceIcon",this);
+            }
+            window.gameModel.getScience(science);
+        }
     },
     vanished:function(){
     }

@@ -42,7 +42,8 @@ var StarSystemModel = Backbone.Model.extend({
             x: 0,
             y: 0,
             fixedStar: [],
-            planet: []
+            planets: [],
+            type: _.sample(["star1"])
         }
     },
     isColonized:function(){
@@ -53,6 +54,9 @@ var StarSystemModel = Backbone.Model.extend({
     },
     setColonizing:function(ship){
         this.colonizingShip = ship;
+    },
+    generatePlants:function(){
+
     },
     colonize:function(colony){
         colony.starSystem = this;
@@ -83,6 +87,18 @@ var FixedStarModel = StarModel.extend({ //恒星
     }
 })
 
+var TEMPERATURE_VERY_LOW = 0;
+var TEMPERATURE_LOW = 1;
+var TEMPERATURE_NORMAL = 2;
+var TEMPERATURE_HIGH = 3;
+var TEMPERATURE_VERY_HIGH = 4;
+
+var GRAVITY_VERY_LOW = 0;
+var GRAVITY_LOW = 1;
+var GRAVITY_NORMAL = 2;
+var GRAVITY_HIGH = 3;
+var GRAVITY_VERY_HIGH = 4;
+
 var CORE_GASEOUS = 0;
 var CORE_LIQUID = 1;
 var CORE_SOLID = 2;
@@ -106,37 +122,33 @@ var PlanetModel = StarModel.extend({ //行星
         return _.extend( StarModel.prototype.defaults.call(this),{
             distanceToSun: 1, //平均距离 单位：天文单位
 
-            minTemperature: 0,
-            maxTemperature: 0,
+            displayTemperature:14, //温度
+            temperature: TEMPERATURE_NORMAL, // 0: very cold, 1: cold: 2: normal; 3:hot; 4:very hot
 
             //orbitalPeriod: 1, //公转周期：高丝年
-            gravity: 1, //重力：单位：G
+            displayGravity: 1, //重力：单位：G
+            gravity: GRAVITY_NORMAL, // 0: very low; 1: low; 2: normal; 3: high; 4:very high
+
             core: CORE_SOLID, //gaseous  liquid solid
 
             //rotationPeriod: 1, //自转周期：标准天
             atmosphere: ATMOSPHERE_NONE, //none, thick ,thin，无，薄，浓密
             atmosphericQuality:ATMOSPHERE_NONE_POISON,//大气成分
 
-            waterCoverage: 0,//水覆盖率
             waterQuality: WATER_NONE_POISON,
 
-            landCoverage: 0,//陆地覆盖率
-
-            habitableZone: 0,
-
-            environment: 1,
+            superficialArea: 5.1, //亿平方公里
+            waterCoverage: 0.71,//水覆盖率
+            landCoverage: 0.29,//陆地覆盖率
 
             colony: null
         })
     },
-    evaluateColonizeSuccessRate:function(){
-
+    getLandArea:function(){
+        return this.get("superficialArea")*this.get("landCoverage");
     },
-    evaluateColony:function(){
-        var colony = this.get("colony");
-        if ( colony ) {
-            colony.evaluteStatus( this );
-        }
+    getWaterArea:function(){
+        return this.get("superficialArea")*this.get("waterCoverage");
     }
 })
 

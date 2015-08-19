@@ -2,9 +2,7 @@ var res = {
     stars_plist : "res/stars.plist",
     stars_png : "res/stars.png",
     ui_plist : "res/ui.plist",
-    ui_png : "res/ui.png",
-    CloseNormal_png : "res/CloseNormal.png",
-    CloseSelected_png : "res/CloseSelected.png"
+    ui_png : "res/ui.png"
 };
 
 var g_resources = [];
@@ -13,23 +11,49 @@ for (var i in res) {
 }
 
 var times = {
-    zoom: 0.5
+    zoom: 0.5,
+    show_tech_detail: 0.3,
+
+    get_science: 0.25
 }
 
 var dimens = {
     top_bar_label: 20,
     log_label_text_size: 14,
 
-    congratulation: 50
+    tech_detail_tech_name : 20,
+    tech_detail_tech_description: 18,
+    tech_detail_tech_flavor: 14,
+    tech_detail_research: 16,
+
+    congratulation: 50,
+    game_over_continue: 20,
+    score_board_title_font_size: 36,
+    loading_font_size: 50,
+
+    score_board_width: 750,
+    score_board_height: 350,
+    score_line_font_size: 20,
+    score_line_height: 35
 }
 
 var colors = {
     top_bar_label: cc.color.BLACK,
+    log_label: cc.color.WHITE,
+    dialog_label: cc.color.WHITE,
     gameover: cc.color.WHITE,
-    science_value: cc.color.BLUE
+    science_value: cc.color.BLUE,
+    tech_detail_tech_name: cc.color.WHITE,
+    tech_detail_tech_description: cc.color.WHITE,
+    tech_detail_tech_flavor: new cc.Color(0xcc,0xcc,0xcc),
+    tech_detail_research: cc.color.WHITE
 }
 
 var texts = {
+    confirm: "确定",
+    continue: "继续",
+    restart: "再来一次大爆炸",
+
     engineType:{
         nuclear: "裂变驱动",
         fusion: "聚变驱动",
@@ -42,12 +66,12 @@ var texts = {
         shuttle:"穿梭船"
     },
     colonyDisaster: {
-        ai:"AI暴动",
-        asteroid: "小行星撞击",
-        economy: "经济崩溃",
-        environment: "环境危机",
-        virus: "病毒爆发",
-        war: "世界大战"
+        ai:"AI暴动统治人类",
+        asteroid: "遭受小行星撞击",
+        economy: "爆发了经济崩溃",
+        environment: "爆发了环境危机",
+        virus: "致命病毒爆发",
+        war: "爆发了核大战"
     },
     shipDisaster: {
         ai: "AI叛变",

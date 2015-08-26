@@ -147,7 +147,7 @@
                 <key>sourceSize</key>
                 <string>{36,36}</string>
             </dict>
-            <key>icon-colonized.png</key>
+            <key>icon-ascension.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{912,2},{48,48}}</string>
@@ -160,7 +160,7 @@
                 <key>sourceSize</key>
                 <string>{48,48}</string>
             </dict>
-            <key>icon-disaster-monster.png</key>
+            <key>icon-colonized.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{962,2},{48,48}}</string>
@@ -173,7 +173,7 @@
                 <key>sourceSize</key>
                 <string>{48,48}</string>
             </dict>
-            <key>icon-disaster-virus.png</key>
+            <key>icon-disaster-ai.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{1012,2},{48,48}}</string>
@@ -186,7 +186,7 @@
                 <key>sourceSize</key>
                 <string>{48,48}</string>
             </dict>
-            <key>icon-disaster-war.png</key>
+            <key>icon-disaster-monster.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{1062,2},{48,48}}</string>
@@ -199,7 +199,7 @@
                 <key>sourceSize</key>
                 <string>{48,48}</string>
             </dict>
-            <key>icon-humanity.png</key>
+            <key>icon-disaster-virus.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{1112,2},{48,48}}</string>
@@ -212,7 +212,7 @@
                 <key>sourceSize</key>
                 <string>{48,48}</string>
             </dict>
-            <key>icon-population.png</key>
+            <key>icon-disaster-war.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{1162,2},{48,48}}</string>
@@ -225,7 +225,7 @@
                 <key>sourceSize</key>
                 <string>{48,48}</string>
             </dict>
-            <key>icon-science-press.png</key>
+            <key>icon-humanity.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{1212,2},{48,48}}</string>
@@ -238,10 +238,36 @@
                 <key>sourceSize</key>
                 <string>{48,48}</string>
             </dict>
+            <key>icon-population.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{1262,2},{48,48}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{48,48}}</string>
+                <key>sourceSize</key>
+                <string>{48,48}</string>
+            </dict>
+            <key>icon-science-press.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{1312,2},{48,48}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{48,48}}</string>
+                <key>sourceSize</key>
+                <string>{48,48}</string>
+            </dict>
             <key>icon-science-small.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{1262,2},{24,24}}</string>
+                <string>{{1362,2},{24,24}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -254,7 +280,7 @@
             <key>icon-science.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{1288,2},{48,48}}</string>
+                <string>{{1388,2},{48,48}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -267,7 +293,7 @@
             <key>icon-score.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{1338,2},{48,48}}</string>
+                <string>{{1438,2},{48,48}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -280,7 +306,7 @@
             <key>icon-time.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{1388,2},{48,48}}</string>
+                <string>{{1488,2},{48,48}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -293,7 +319,7 @@
             <key>icon-type-atomic.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{1438,2},{48,48}}</string>
+                <string>{{1538,2},{48,48}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -306,7 +332,7 @@
             <key>icon-type-dna.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{1488,2},{48,48}}</string>
+                <string>{{1588,2},{48,48}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -319,7 +345,7 @@
             <key>icon-type-mechanical.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{1538,2},{48,48}}</string>
+                <string>{{1638,2},{48,48}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -332,7 +358,7 @@
             <key>icon-type-mind.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{1588,2},{48,48}}</string>
+                <string>{{1688,2},{48,48}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -345,7 +371,7 @@
             <key>top-bar.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{1638,2},{3,30}}</string>
+                <string>{{1738,2},{3,30}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -358,7 +384,20 @@
             <key>zoom-in-default.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{1643,2},{37,37}}</string>
+                <string>{{1743,2},{37,37}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{37,37}}</string>
+                <key>sourceSize</key>
+                <string>{37,37}</string>
+            </dict>
+            <key>zoom-in-disable.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{1782,2},{37,37}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -371,7 +410,7 @@
             <key>zoom-in-press.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{1682,2},{37,37}}</string>
+                <string>{{1821,2},{37,37}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -384,7 +423,20 @@
             <key>zoom-out-default.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{1721,2},{37,37}}</string>
+                <string>{{1860,2},{37,37}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{37,37}}</string>
+                <key>sourceSize</key>
+                <string>{37,37}</string>
+            </dict>
+            <key>zoom-out-disable.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{1899,2},{37,37}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -397,7 +449,7 @@
             <key>zoom-out-press.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{1760,2},{37,37}}</string>
+                <string>{{1938,2},{37,37}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -415,9 +467,9 @@
             <key>realTextureFileName</key>
             <string>ui.png</string>
             <key>size</key>
-            <string>{1799,52}</string>
+            <string>{1977,52}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:457e8dc22be7e135c6431334cb97e41f:968045699c5693315461661050a1b630:e489eb72a1dac3e9a97caaf8aad1ac42$</string>
+            <string>$TexturePacker:SmartUpdate:c78fbc0cd3a8f4955b5d63417175ddbf:0e5b7fb7575c241ab587cff2817891da:e489eb72a1dac3e9a97caaf8aad1ac42$</string>
             <key>textureFileName</key>
             <string>ui.png</string>
         </dict>

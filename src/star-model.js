@@ -9,6 +9,24 @@ var STAR_SYSTEM_NAME_POOL = [ "半人马","小熊","大熊","仙后","天龙","�
     "天鸽","乌鸦","南鱼","天兔","船底","船尾","罗盘","船帆","玉夫","波江","盾牌","天炉","唧筒","雕具","显微镜","巨爵" ]
 var STAR_SYSTEM_ORDER = ["α","β","γ","δ","ε","ζ","η","θ","ι","κ","λ","μ","ν","ξ","ο","π","ρ","σ","τ","υ","φ","χ","ψ","ω"]
 
+var FIXED_STAR_RED_GIANT = 1;
+var FIXED_STAR_NORMAL = 2;
+var FIXED_STAR_WHITE_DWARF = 3;
+
+var CORE_GASEOUS = 1;
+var CORE_SOLID = 2;
+
+var GRAVITY_VERY_LOW = 0;
+var GRAVITY_LOW = 1;
+var GRAVITY_NORMAL = 2;
+var GRAVITY_HIGH = 3;
+var GRAVITY_VERY_HIGH = 4;
+
+var FIXED_STAR_TYPES = [ FIXED_STAR_NORMAL, FIXED_STAR_NORMAL, FIXED_STAR_NORMAL, FIXED_STAR_RED_GIANT, FIXED_STAR_WHITE_DWARF];
+var PLANET_NUMBER_POOL = [ 1, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 6, 7, 8]
+var PLANET_TYPE_POOL = [CORE_GASEOUS,CORE_GASEOUS,CORE_GASEOUS,CORE_GASEOUS,CORE_GASEOUS,CORE_SOLID,CORE_SOLID,CORE_SOLID,CORE_SOLID,CORE_SOLID];
+var PLANET_GRAVITY_POOL = [GRAVITY_VERY_LOW, GRAVITY_LOW,GRAVITY_LOW, GRAVITY_NORMAL,GRAVITY_NORMAL,GRAVITY_NORMAL, GRAVITY_HIGH ];
+
 var starNameGenerated;
 var generateStarSystemName=function() {
     var name;
@@ -28,9 +46,9 @@ var generateStarSystemName=function() {
     if ( currentCount >= STAR_SYSTEM_ORDER.length ) {
         var turn = Math.ceil( (currentCount+1) / STAR_SYSTEM_ORDER.length );
         currentCount = currentCount % STAR_SYSTEM_ORDER.length;
-        name = STAR_SYSTEM_ORDER[currentCount]+turn + name+"座";
+        name = name+"座"+STAR_SYSTEM_ORDER[currentCount]+turn;
     } else {
-        name = STAR_SYSTEM_ORDER[currentCount]+ name+"座";
+        name = name+"座"+STAR_SYSTEM_ORDER[currentCount];
     }
     return name;
 }
@@ -41,8 +59,6 @@ var StarSystemModel = Backbone.Model.extend({
             name: null,
             x: 0,
             y: 0,
-            fixedStar: [],
-            planets: [],
             type: _.sample(["star1"])
         }
     },
@@ -55,11 +71,40 @@ var StarSystemModel = Backbone.Model.extend({
     setColonizing:function(ship){
         this.colonizingShip = ship;
     },
-    generatePlants:function(){
+    initialize:function(){
+        this._fixedStars = [];
+        this._planets = [];
 
+        this._planetNumber = _.sample( PLANET_NUMBER_POOL );
+        this.generateFixedStar();
+        this.generatePlants();
+
+    },
+    generateFixedStar:function(){
+        this._fixedStars.push( new FixedStarModel({
+            type: _.sample(FIXED_STAR_TYPES)
+        }));
+    },
+    generatePlants:function(){
+        var distance = 4;
+        var distanceDiff = 3;
+
+        for ( var i = 0; i < this._planetNumber; i++ ) {
+            this._planets.push(new PlanetModel({
+                distanceToSun: distance/10 + Math.round(Math.random()*30 - 15)/100,
+                level: i
+            }));
+            distance = distanceDiff + 4;
+            distanceDiff *= 2;
+        }
+
+        this._bestPlanet = _.max(this._planets,function(planetModel){
+            return planetModel.get("maxPopulation");
+        },this);
     },
     colonize:function(colony){
         colony.starSystem = this;
+        colony.planet = this._bestPlanet;
         this.colony = colony;
         this.setColonizing(null);
         gameModel.addColony(colony);
@@ -67,23 +112,180 @@ var StarSystemModel = Backbone.Model.extend({
     }
 });
 
-var StarModel = Backbone.Model.extend({
+var SunSystemModel = StarSystemModel.extend({
+    generatePlants: function(){
+        this._planetNumber = 9;
+
+        this._planets.push(new PlanetModel({
+            name: "水星",
+            type: CORE_SOLID,
+            distanceToSun: 0.387,
+
+            displayTemperature: 452 - 273,
+            temperature: TEMPERATURE_VERY_HIGH,
+
+            displayGravity: 3.7/9.8, //重力：单位：G
+            gravity: GRAVITY_LOW,
+
+            atmosphere: ATMOSPHERE_NONE,
+
+            waterQuality: WATER_NONE_POISON,
+            superficialArea: 0.748,
+            seaCoverage: 0,//水覆盖率
+            landCoverage: 1//陆地覆盖率
+        }));
+        this._planets.push(new PlanetModel({
+            name: "金星",
+            type: CORE_SOLID,
+            distanceToSun: 0.723,
+
+            displayTemperature: 475,
+            temperature: TEMPERATURE_VERY_HIGH,
+
+            displayGravity: 8.78/9.8, //重力：单位：G
+            gravity: GRAVITY_NORMAL,
+
+            atmosphere: ATMOSPHERE_THICK,
+            atmosphericQuality:ATMOSPHERE_LOTS_POISON,
+
+            waterQuality: WATER_NONE_POISON,
+            superficialArea: 4.6,
+            seaCoverage: 0,//水覆盖率
+            landCoverage: 1//陆地覆盖率
+        }));
+        var earth;
+        this._planets.push(earth = new PlanetModel({
+            name: "地球",
+            type: CORE_SOLID,
+            distanceToSun: 1,
+
+            displayTemperature:14,
+            temperature: TEMPERATURE_NORMAL,
+
+            displayGravity: 1, //重力：单位：G
+            gravity: GRAVITY_NORMAL,
+
+            atmosphere: ATMOSPHERE_NORMAL,
+            atmosphericQuality:ATMOSPHERE_NONE_POISON,
+
+            waterQuality: WATER_NONE_POISON,
+
+            superficialArea: 5.1,
+            seaCoverage: 0.71,//水覆盖率
+            landCoverage: 0.29//陆地覆盖率
+        }));
+        this._bestPlanet = earth;
+        this._planets.push(new PlanetModel({
+            name: "火星",
+            type: CORE_SOLID,
+            distanceToSun: 1.524,
+
+            displayTemperature:-63,
+            temperature: TEMPERATURE_LOW,
+
+            displayGravity: 0.38, //重力：单位：G
+            gravity: GRAVITY_LOW,
+
+            atmosphere: ATMOSPHERE_THIN,
+            atmosphericQuality:ATMOSPHERE_LITTLE_POISON,
+
+            superficialArea: 1.44,
+            seaCoverage: 0,//水覆盖率
+            landCoverage: 1//陆地覆盖率
+        }));
+        this._planets.push(new PlanetModel({
+            isAsteroid: true,
+            name: "小行星带",
+            type: CORE_SOLID,
+            distanceToSun: 2.8
+        }));
+        this._planets.push(new PlanetModel({
+            name: "木星",
+            type: CORE_GASEOUS,
+            distanceToSun: 5.203,
+
+            displayTemperature: -168,
+            temperature: TEMPERATURE_VERY_LOW,
+
+            displayGravity: 23.12/9.8, //重力：单位：G
+            gravity: GRAVITY_HIGH,
+
+            atmosphere: ATMOSPHERE_THIN,
+            atmosphericQuality:ATMOSPHERE_LOTS_POISON,
+
+            superficialArea: 621.8,
+            seaCoverage: 0,//水覆盖率
+            landCoverage: 0,//陆地覆盖率
+            airCoverage: 1
+        }));
+        this._planets.push(new PlanetModel({
+            name: "土星",
+            type: CORE_GASEOUS,
+            distanceToSun: 9.539,
+
+            displayTemperature: -178,
+            temperature: TEMPERATURE_VERY_LOW,
+
+            displayGravity: 12.5/9.8, //重力：单位：G
+            gravity: GRAVITY_NORMAL,
+
+            atmosphere: ATMOSPHERE_THIN,
+            atmosphericQuality:ATMOSPHERE_LOTS_POISON,
+
+            superficialArea: 457.15,
+            seaCoverage: 0,//水覆盖率
+            landCoverage: 0,//陆地覆盖率
+            airCoverage: 1
+        }));
+        this._planets.push(new PlanetModel({
+            name: "天王星",
+            type: CORE_GASEOUS,
+            distanceToSun: 19.191,
+
+            displayTemperature: -180,
+            temperature: TEMPERATURE_VERY_LOW,
+
+            displayGravity: 8.69/9.8, //重力：单位：G
+            gravity: GRAVITY_NORMAL,
+
+            atmosphere: ATMOSPHERE_THIN,
+            atmosphericQuality:ATMOSPHERE_LOTS_POISON,
+
+            superficialArea: 81.156,
+            seaCoverage: 0,//水覆盖率
+            landCoverage: 0,//陆地覆盖率
+            airCoverage: 1
+        }));
+        this._planets.push(new PlanetModel({
+            distanceToSun: 30.071,
+            name: "海王星",
+            type: CORE_GASEOUS,
+
+            displayTemperature: -214,
+            temperature: TEMPERATURE_VERY_LOW,
+
+            displayGravity: 11/9.8, //重力：单位：G
+            gravity: GRAVITY_NORMAL,
+
+            atmosphere: ATMOSPHERE_THIN,
+            atmosphericQuality:ATMOSPHERE_LOTS_POISON,
+
+            superficialArea: 81.156,
+            seaCoverage: 0,//水覆盖率
+            landCoverage: 0,//陆地覆盖率
+            airCoverage: 1
+        }));
+    }
+});
+
+var FixedStarModel = Backbone.Model.extend({ //恒星
     defaults:function(){
         return {
-            name: "earth",
-            description: null //描述
-        }
-    }
-})
-
-var FixedStarModel = StarModel.extend({ //恒星
-    defaults:function(){
-        return _.extend( StarModel.prototype.defaults.call(this), {
+            name: "",
+            description: null, //描述
             size: "",
-            type: "", //红巨星 白矮星 红矮星 脉冲星
-            dysonRing: false,
-            dysonSphere: false
-        })
+            type: FIXED_STAR_NORMAL //giant , nomarl, dwarf, 红巨星 白矮星 红矮星 脉冲星
+        }
     }
 })
 
@@ -93,19 +295,10 @@ var TEMPERATURE_NORMAL = 2;
 var TEMPERATURE_HIGH = 3;
 var TEMPERATURE_VERY_HIGH = 4;
 
-var GRAVITY_VERY_LOW = 0;
-var GRAVITY_LOW = 1;
-var GRAVITY_NORMAL = 2;
-var GRAVITY_HIGH = 3;
-var GRAVITY_VERY_HIGH = 4;
-
-var CORE_GASEOUS = 0;
-var CORE_LIQUID = 1;
-var CORE_SOLID = 2;
-
-var ATMOSPHERE_NONE = 0;
-var ATMOSPHERE_THIN = 1;
-var ATMOSPHERE_THICK = 2;
+var ATMOSPHERE_NONE = 1;
+var ATMOSPHERE_THIN = 2;
+var ATMOSPHERE_NORMAL = 3;
+var ATMOSPHERE_THICK = 4;
 
 var ATMOSPHERE_NONE_POISON = 0;
 var ATMOSPHERE_LITTLE_POISON = 1;
@@ -117,10 +310,15 @@ var WATER_NONE_POISON = 0;
 var WATER_LITTLE_POISON = 1;
 var WATER_LOTS_POISON = 2;
 
-var PlanetModel = StarModel.extend({ //行星
+var PlanetModel = Backbone.Model.extend({ //行星
     defaults:function(){
-        return _.extend( StarModel.prototype.defaults.call(this),{
+        return {
+            name: "",
+            description: null, //描述
+
             distanceToSun: 1, //平均距离 单位：天文单位
+
+            type: 0, //gaseous  liquid solid
 
             displayTemperature:14, //温度
             temperature: TEMPERATURE_NORMAL, // 0: very cold, 1: cold: 2: normal; 3:hot; 4:very hot
@@ -129,34 +327,180 @@ var PlanetModel = StarModel.extend({ //行星
             displayGravity: 1, //重力：单位：G
             gravity: GRAVITY_NORMAL, // 0: very low; 1: low; 2: normal; 3: high; 4:very high
 
-            core: CORE_SOLID, //gaseous  liquid solid
-
             //rotationPeriod: 1, //自转周期：标准天
-            atmosphere: ATMOSPHERE_NONE, //none, thick ,thin，无，薄，浓密
+            atmosphere: ATMOSPHERE_NORMAL, //none, thick ,normal, thin，无，薄，浓密
             atmosphericQuality:ATMOSPHERE_NONE_POISON,//大气成分
 
             waterQuality: WATER_NONE_POISON,
 
-            superficialArea: 5.1, //亿平方公里
-            waterCoverage: 0.71,//水覆盖率
+            superficialArea: Math.random()*10+1, //亿平方公里 km²  1.44 火星
+            seaCoverage: 0.71,//水覆盖率
             landCoverage: 0.29,//陆地覆盖率
+            airCoverage: 0,
 
             colony: null
-        })
+        };
     },
-    getLandArea:function(){
-        return this.get("superficialArea")*this.get("landCoverage");
-    },
-    getWaterArea:function(){
-        return this.get("superficialArea")*this.get("waterCoverage");
-    }
-})
+    initialize:function(){
+        if ( this.get("type") ) {
+            //预定义
+        } else {
+            this.set({
+                "type": _.sample(PLANET_TYPE_POOL),
+                gravity: _.sample(PLANET_GRAVITY_POOL)
+            });
+            var level = this.get("level");
+            if ( level < 2 ) {
+                this.set({
+                    type: CORE_SOLID,
+                    "temperature": TEMPERATURE_VERY_HIGH,
+                    "displayTemperature": Math.random() * 100 + 100,
+                    "gravity": _.sample([GRAVITY_LOW, GRAVITY_NORMAL]),
+                    "superficialArea": Math.round(Math.random() * 300) / 100
+                });
+            } else if ( level < 4 ) {
+                this.set({
+                    type: CORE_SOLID,
+                    "temperature": TEMPERATURE_HIGH,
+                    "displayTemperature": Math.random()*50+50,
+                    "gravity": _.sample([GRAVITY_LOW, GRAVITY_NORMAL]),
+                    "superficialArea": Math.round(Math.random()*200)/100+2
+                });
+            } else if ( level < 5 ) {
+                this.set({
+                    type: CORE_SOLID,
+                    "temperature": TEMPERATURE_NORMAL,
+                    "displayTemperature": Math.random()*50,
+                    "gravity": _.sample([GRAVITY_LOW, GRAVITY_NORMAL, GRAVITY_HIGH]),
+                    "superficialArea": Math.round(Math.random()*200)/100+2
+                });
+            } else if ( level < 7 ) {
+                this.set({
+                    type: CORE_GASEOUS,
+                    "temperature": TEMPERATURE_LOW,
+                    "displayTemperature": Math.random()*50-100,
+                    "gravity": _.sample([GRAVITY_NORMAL, GRAVITY_HIGH]),
+                    "superficialArea": Math.round(Math.random()*20000)/100+500
+                });
+            } else {
+                this.set({
+                    type: CORE_GASEOUS,
+                    "temperature": TEMPERATURE_VERY_LOW,
+                    "displayTemperature": Math.random()*100-250,
+                    "gravity": _.sample([GRAVITY_HIGH]),
+                    "superficialArea": Math.round(Math.random()*2000)/100+80
+                });
+            }
+            switch ( this.get("gravity") ) {
+                case GRAVITY_LOW:
+                    this.set("displayGravity", 0.4 + Math.round(Math.random()*40)/100 );
+                    break;
+                case GRAVITY_NORMAL:
+                    this.set("displayGravity", 0.8 + Math.round(Math.random()*40)/100 );
+                    break;
+                case GRAVITY_HIGH:
+                    this.set("displayGravity", 1.5 + Math.round(Math.random()*100)/100 );
+                    break;
+                case GRAVITY_VERY_HIGH:
+                    this.set("displayGravity", 3 + Math.round(Math.random()*40)/100 );
+                    break;
+            }
 
-var AsteroidBeltModel = StarModel.extend({ //行星
-    defaults:function(){
-        return {
-            distanceToSun: 1, //距离 单位：天文单位
-            facility: null
+            if (this.get("type") == CORE_GASEOUS) {
+                this.set("landCoverage", 0);
+                this.set("seaCoverage", 0);
+                this.set("airCoverage", 1);
+                this.set("atmosphere",ATMOSPHERE_THICK);
+                this.set("atmosphericQuality", _.sample([ATMOSPHERE_NONE_POISON, ATMOSPHERE_LITTLE_POISON,ATMOSPHERE_LITTLE_POISON, ATMOSPHERE_LOTS_POISON, ATMOSPHERE_LOTS_POISON]));
+            } else if (this.get("type") == CORE_SOLID) {
+                this.set("airCoverage", 0);
+                var coverage;
+                if ( this.get("temperature") == TEMPERATURE_NORMAL ) {
+                    coverage = Math.random();
+                } else coverage = 1;
+                this.set("landCoverage", coverage);
+                this.set("seaCoverage", 1 - coverage);
+                this.set("atmosphere", _.sample([ATMOSPHERE_NONE,ATMOSPHERE_THIN,ATMOSPHERE_NORMAL,ATMOSPHERE_THICK]));
+                this.set("atmosphericQuality", _.sample([ATMOSPHERE_NONE_POISON, ATMOSPHERE_LITTLE_POISON, ATMOSPHERE_LOTS_POISON]));
+                if ( this.get("seaCoverage") ) this.set("waterQuality", _.sample([WATER_NONE_POISON, WATER_LITTLE_POISON, WATER_LOTS_POISON]));
+            }
+        }
+        this.set("landSuperficialArea", this.get("superficialArea")*this.get("landCoverage"));
+        this.set("seaSuperficialArea", this.get("superficialArea")*this.get("seaCoverage"));
+        this.set("airSuperficialArea", this.get("superficialArea")*this.get("airCoverage"));
+
+        var landUsage = 811359;
+        var seaUsage = 0;
+        var airUsage = 0;
+//temperature penalty
+        var temperature = this.get("temperature");
+        if ( temperature == TEMPERATURE_VERY_LOW || temperature == TEMPERATURE_VERY_HIGH ) {
+            landUsage = 0;
+            seaUsage = 0;
+            airUsage = 0;
+        } else if ( temperature == TEMPERATURE_LOW || temperature == TEMPERATURE_HIGH ) {
+            landUsage /= 3;
+            seaUsage /= 3;
+            airUsage /= 3;
+        }
+//gravity penalty
+        var gravity = this.get("gravity");
+        if ( gravity == GRAVITY_VERY_HIGH ) {
+            landUsage = 0;
+            seaUsage = 0;
+            airUsage = 0;
+        } else if ( gravity == GRAVITY_HIGH ) {
+            landUsage /= 3;
+            seaUsage /= 3;
+            airUsage /= 3;
+        }
+//atmosphere penalty
+        var atmosphere = this.get("atmosphere");
+        if ( atmosphere == ATMOSPHERE_NONE ) {
+            airUsage = 0;
+            landUsage = 0;
+            seaUsage = 0;
+        } else if ( atmosphere == ATMOSPHERE_THIN ) {
+            airUsage = 0;
+            landUsage /= 3;
+            seaUsage /= 3;
+        } else if ( atmosphere == ATMOSPHERE_THICK ) {
+            seaUsage /= 3;
+        }
+
+        var atmosphericQuality = this.get("atmosphericQuality");
+        if ( atmosphericQuality === ATMOSPHERE_LITTLE_POISON ) {
+            airUsage /= 4;
+            landUsage /= 2;
+        } else if ( atmosphericQuality === ATMOSPHERE_LOTS_POISON ) {
+            airUsage = 0;
+            landUsage = 0;
+        }
+//waterQuality penalty
+        var waterQuality = this.get("waterQuality");
+        if ( waterQuality === WATER_LITTLE_POISON ) {
+            seaUsage /= 4;
+        } else if ( atmosphericQuality === WATER_LOTS_POISON ) {
+            seaUsage = 0;
+        }
+
+        this.set("landUsage", landUsage );
+        this.set("seaUsage", seaUsage);
+        this.set("airUsage", airUsage);
+
+        this.calSupportPopulation();
+
+        this.on("change:landUsage,change:seaUsage,change:airUsage",this.calSupportPopulation, this);
+    },
+    calSupportPopulation:function(){
+        var maxPopulation = this.get("landSuperficialArea")*this.get("landUsage") +
+            this.get("seaSuperficialArea")*this.get("seaUsage") +
+            this.get("airSuperficialArea")*this.get("airUsage");
+
+        this.set("maxPopulation", Math.max(maxPopulation, 120) );
+
+        if ( maxPopulation > 10000000 ) {
+            cc.log(this);
         }
     }
 })

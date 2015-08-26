@@ -9,7 +9,7 @@ var GameOverLayer = cc.Layer.extend({
         label.attr({
             color: colors.gameover,
             x: cc.winSize.width/2,
-            y: cc.winSize.height-100,
+            y: cc.winSize.height-50,
             anchorX: 0.5,
             anchorY: 0.5
         })
@@ -22,25 +22,39 @@ var GameOverLayer = cc.Layer.extend({
         gameModel.set("colonizeRate", Math.floor(colonized/all*100) );
         var year = Math.round(options.model.get("year")-START_YEAR);
         if ( year > MAX_YEAR ) year = MAX_YEAR;
-        var str = options.model.get("playerName")+"在"+year+
-            "年时间里\n占领了银河系"+( colonized >= all ? "所有" : (gameModel.get("colonizeRate")+"%") )+"的星系";
+        var str = "来自 "+options.model.get("homeName")+" 的 "+options.model.get("playerName")+" \n\n你在"+year+
+            "年时间里殖民了银河系"+( colonized >= all ? "所有" : (gameModel.get("colonizeRate")+"%") )+"的星系";
         label = new cc.LabelTTF(str, null, 25);
         label.attr({
+            textAlign: cc.TEXT_ALIGNMENT_CENTER,
             color: colors.gameover,
             x: cc.winSize.width/2,
-            y: cc.winSize.height-190,
+            y: cc.winSize.height-135,
             anchorX: 0.5,
             anchorY: 0.5
         });
         this.addChild(label);
 
         if ( options.model.get("year") < 100000 ) {
-            var bonus = Math.round( 100000 - options.model.get("year") )*100;
-            label = new cc.LabelTTF("时间奖励："+bonus, null, 25);
+            var bonus = Math.round( 100000 - options.model.get("year") );
+            label = new cc.LabelTTF("时间奖励："+bonus, null, 20);
             label.attr({
                 color: colors.gameover,
                 x: cc.winSize.width / 2,
-                y: cc.winSize.height - 245,
+                y: cc.winSize.height - 225,
+                anchorX: 0.5,
+                anchorY: 0.5
+            });
+            this.addChild(label);
+            options.model.set("score", options.model.get("score") + bonus);
+        }
+        if ( options.model.isAllTechPyramidFull() ) {
+            var bonus = Math.round(options.model.get("science"));
+            label = new cc.LabelTTF("升华奖励："+bonus, null, 20);
+            label.attr({
+                color: colors.gameover,
+                x: cc.winSize.width / 2,
+                y: cc.winSize.height - 255,
                 anchorX: 0.5,
                 anchorY: 0.5
             });
@@ -48,7 +62,8 @@ var GameOverLayer = cc.Layer.extend({
             options.model.set("score", options.model.get("score") + bonus);
         }
 
-        str = "你的得分:"+Math.floor(options.model.get("score"));
+        options.model.set("score",Math.round(options.model.get("score")));
+        str = "你的得分:"+options.model.get("score");
         label = new cc.LabelTTF(str, null, 25 );
         label.attr({
             color: colors.gameover,
@@ -73,7 +88,7 @@ var GameOverLayer = cc.Layer.extend({
             anchorX: 0.5,
             anchorY: 0.5
         });
-        var continueText = new cc.LabelTTF(texts.continue, "宋体", dimens.game_over_continue);
+        var continueText = new cc.LabelTTF(texts.check_score_board, "宋体", dimens.game_over_continue);
         continueText.attr({
             color: cc.color.WHITE,
             x: continueItem.width/2,
@@ -104,12 +119,12 @@ var ScoreBoardLayer = cc.LayerColor.extend({
             var year = Math.round(gameModel.get("year")-START_YEAR);
             if ( year > MAX_YEAR ) year = MAX_YEAR;
             var score = {
-                name : gameModel.get("playerName"),
-                ".priority": Math.floor(gameModel.get("score")),
+                name : "来自"+gameModel.get("homeName")+"的"+gameModel.get("playerName"),
+                ".priority": gameModel.get("score"),
                 rate: gameModel.get("colonizeRate"),
                 population: Math.floor(gameModel.get("totalPopulation")),
                 time: year,
-                score : Math.floor(gameModel.get("score")),
+                score : gameModel.get("score"),
                 timestamp: Firebase.ServerValue.TIMESTAMP,
                 r: Math.random()
             }
@@ -289,7 +304,7 @@ var ScoreBoardLayer = cc.LayerColor.extend({
             color = cc.color.BLACK;
 
         var str = score.name;
-        for ( var j = dbcsByteLength(str); j < 16; j++ ){
+        for ( var j = dbcsByteLength(str); j < 24; j++ ){
             str += " ";
         }
         str += score.rate+"%";

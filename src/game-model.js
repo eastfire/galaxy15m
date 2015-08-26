@@ -19,13 +19,14 @@ var GameModel = Backbone.Model.extend({
 
             science: 0,
 
+            savedTech: [],
             initTech: [["quantum-communication"]],
             unlockedTech: [
                 ["exoskeleton","space-elevator","virtual-reality","memory-storage", "spirit-of-science","bionic"],
                 ["anti-gravity","fusion-drive","clone-human","cure-cancer","psychohistory","spirit-of-adventure"],
-                ["anti-matter","cure-old","exoskeleton"],
+                ["anti-matter","cure-old","multiverse-communication"],
                 ["warp-engine","exoskeleton"],
-                ["dyson-sphere","meaning-of-life"]
+                ["dyson-sphere","meaning-of-life","time-machine","group-mind"]
             ],
             maxTechLevel: 5,
             maxLevelOneTech : 5,
@@ -36,7 +37,10 @@ var GameModel = Backbone.Model.extend({
             shipSpeed: 0.001,
 
             maxPopulationIncreaseWarRate: 0.1,
-            maxPopulationIncreaseLaunchRate: 0.2
+            maxPopulationWarThreshold: 1000,
+
+            maxPopulationIncreaseLaunchRate: 0.2,
+            maxPopulationLaunchThreshold: 1000
         }
     },
     initialize:function(){
@@ -51,24 +55,6 @@ var GameModel = Backbone.Model.extend({
             this._colonies.push([]);
             this._ships.push([]);
         }
-
-        this._tech = [];
-        _.each(this.get("initTech"),function(tier){
-            var tierTech = [];
-            _.each(tier,function(name){
-                tierTech.push( new CLASS_MAP[name]() );
-            },this);
-            this._tech.push(tierTech)
-        },this);
-
-        this._availableTech = [];
-        _.each(this.get("unlockedTech"),function(tier){
-            var tierTech = [];
-            _.each(tier,function(name){
-                tierTech.push( new CLASS_MAP[name]() );
-            },this);
-            this._availableTech.push(tierTech)
-        },this);
     },
     isTechAvailable:function(name){
         _.each(this._availableTech,function(tier){
@@ -88,6 +74,16 @@ var GameModel = Backbone.Model.extend({
                 }
             }
         }
+        for ( var i = 0 ,length = this._extraTech.length; i < length; i++ ){
+            var techModel = this._extraTech[i];
+            if ( techModel === name || techModel.get("name") === name ) {
+                return techModel;
+            }
+        }
+    },
+    isAllTechPyramidFull:function(){
+        var maxLevel = this.get("maxTechLevel");
+        return this._tech.length >= maxLevel && this._tech[maxLevel-1].length >= ( this.get("maxLevelOneTech") - maxLevel - 1);
     },
     techCount:function(level){
         if ( this._tech.length <= level )
@@ -107,25 +103,68 @@ var GameModel = Backbone.Model.extend({
         techModel.onGain();
     },
     initAll:function(){
+        this._initTech();
         this._generateGalaxy();
         this._initColony();
     },
+    _initTech:function(){
+        this._extraTech = [];
+        _.each(this.get("savedTech"),function(name){
+            var techModel = new CLASS_MAP[name]();
+            techModel.onGain();
+            techModel._isFromMultiverse = true;
+            this._extraTech.push( techModel );
+        },this);
+
+        this._tech = [];
+        _.each(this.get("initTech"),function(tier){
+            var tierTech = [];
+            _.each(tier,function(name){
+                if ( !_.contains(this.get("savedTech"), name) ) {
+                    tierTech.push(new CLASS_MAP[name]());
+                }
+            },this);
+            this._tech.push(tierTech)
+        },this);
+
+        this._availableTech = [];
+        _.each(this.get("unlockedTech"),function(tier){
+            var tierTech = [];
+            _.each(tier,function(name){
+                if ( !_.contains(this.get("savedTech"), name) ) {
+                    tierTech.push(new CLASS_MAP[name]());
+                }
+            },this);
+            this._availableTech.push(tierTech)
+        },this);
+    },
     _initColony:function(){
+
         this.startingColony = new ColonyModel({
-            name: "地球",
+            name: "",
             population: 800000,
-            populationGrowRate: 0.1,
-            maxPopulation: 1200000
+            populationGrowRate: 0.1
         });
+
         this.startingColony.starSystem = this.startingStarSystem;
         this.startingStarSystem.colony = this.startingColony;
         this.startingStarSystem.set("name","太阳系");
+
+        this.startingColony.planet = this.startingStarSystem._bestPlanet;
         this.addColony(this.startingColony);
+
+        //将最近的星系改为半人马alpha
+        var oldStar = this.startingStarSystem._otherStarSystemEntry[0].star;
+        var oldStarName = oldStar.get("name");
+        var alphaStar = this._stars[0];
+        var alphaStarName = alphaStar.get("name");
+        alphaStar.set("name", oldStarName);
+        oldStar.set("name",alphaStarName);
 
         _.each(this._colonies,function(slot){
             _.each(slot,function(colony){
                 this.getPopulation(colony.get("population"));
-                this.getScore(colony.get("population"));
+                this.getScore(colony.get("population")/10000);
             },this);
         },this);
     },
@@ -185,7 +224,7 @@ var GameModel = Backbone.Model.extend({
         var clusterNumber = 1;
         var divide = 4;
         var divideAngle = Math.PI*2/divide;
-        var staringStarSystemNumber = 256;
+        var staringStarSystemNumber = 251 + Math.round(Math.random()*10);
 
         var _a= 0.1;
         var _ar = 2;
@@ -213,10 +252,11 @@ var GameModel = Backbone.Model.extend({
             for ( var i = 0; i < divide; i++ ) {
                 var c = _.sample(currentCluster, count);
                 _.each( c, function(offset){
-                    this._generateOneStar( currentAngle + divideAngle*i + offset.a, currentR+offset.r);
                     currentCount++;
-                    if ( currentCount == staringStarSystemNumber ) {
-                        this.startingStarSystem = this._stars[this._stars.length - 1];
+                    if ( currentCount === staringStarSystemNumber ) {
+                        this._generateHomeWorld( currentAngle + divideAngle*i + offset.a, currentR+offset.r );
+                    } else {
+                        this._generateOneStar( currentAngle + divideAngle*i + offset.a, currentR+offset.r);
                     }
                 },this);
             }
@@ -259,15 +299,18 @@ var GameModel = Backbone.Model.extend({
             starSysModel._otherStarSystemEntry = _.sortBy(list,function(entry){
                 return entry.distance_2;
             },this);
-            if ( this.startingStarSystem == starSysModel ) {
-                var name1 = this._stars[0].get("name");
-                var name2 = starSysModel._otherStarSystemEntry[0].star.get("name");
-                starSysModel._otherStarSystemEntry[0].star.set("name",name1);
-                this._stars[0].set("name",name2);
-            }
         },this);
         var t3 = new Date().getTime();
         cc.log("calculating star distance, use time:"+(t3-t2));
+    },
+    _generateHomeWorld:function( angle, radius ) {
+        var position = polarToXY(angle , radius);
+        var starSystem = new SunSystemModel({
+            x: -position.x*UP_SCALE_RATE,
+            y: position.y*UP_SCALE_RATE
+        });
+        this._stars.push(starSystem);
+        this.startingStarSystem = starSystem;
     },
     _generateOneStar:function( angle, radius ) {
         var position = polarToXY(angle , radius);

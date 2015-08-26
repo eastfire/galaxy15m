@@ -11,3 +11,4 @@ var MyButtonSprite = cc.Sprite.extend({
         titleLabel.y = this.getContentSize().height / 2;
     }
 });
+

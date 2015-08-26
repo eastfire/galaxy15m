@@ -18,7 +18,7 @@ var UILayer = cc.Layer.extend({
         this.model.on("render:score",this.renderScore,this);
         this.model.on("render:science",this.renderScience,this);
         this.model.on("gameover",this.onGameOver,this);
-
+        this.model.on("ascension",this.onStartAscension,this);
         return true;
     },
     initView:function(){
@@ -32,25 +32,27 @@ var UILayer = cc.Layer.extend({
         });
         this.addChild(topBar,UI_Z_INDEX);
 
-        var zoomInItem = new cc.MenuItemImage(
+        this.zoomInItem = new cc.MenuItemImage(
             cc.spriteFrameCache.getSpriteFrame("zoom-in-default.png"),
             cc.spriteFrameCache.getSpriteFrame("zoom-in-press.png"),
+            cc.spriteFrameCache.getSpriteFrame("zoom-in-disable.png"),
             function () {
                 mainLayer.zoomIn(0.2);
             }, this);
-        zoomInItem.attr({
+        this.zoomInItem.attr({
             x: cc.winSize.width - 75,
             y: 25,
             anchorX: 0.5,
             anchorY: 0.5
         });
-        var zoomOutItem = new cc.MenuItemImage(
+        this.zoomOutItem = new cc.MenuItemImage(
             cc.spriteFrameCache.getSpriteFrame("zoom-out-default.png"),
             cc.spriteFrameCache.getSpriteFrame("zoom-out-press.png"),
+            cc.spriteFrameCache.getSpriteFrame("zoom-out-disable.png"),
             function () {
                 mainLayer.zoomOut(0.2);
             }, this);
-        zoomOutItem.attr({
+        this.zoomOutItem.attr({
             x: cc.winSize.width - 25,
             y: 25,
             anchorX: 0.5,
@@ -69,10 +71,11 @@ var UILayer = cc.Layer.extend({
             anchorX: 0.5,
             anchorY: 0.5
         });
-        var menu = new cc.Menu([zoomInItem, zoomOutItem, scienceItem]);
+        var menu = new cc.Menu([this.zoomInItem, this.zoomOutItem, scienceItem]);
         menu.x = 0;
         menu.y = 0;
         this.addChild(menu, UI_Z_INDEX);
+        this.scienceItem = scienceItem;
 
         this.scienceLabel = new ccui.Text("123", "Arial", dimens.top_bar_label );
         this.scienceLabel.enableOutline(cc.color.WHITE, 3);
@@ -168,7 +171,7 @@ var UILayer = cc.Layer.extend({
         this.addChild(this.logBg,UI_Z_INDEX);
     },
     renderScore:function(){
-        this.scoreLabel.setString(Math.floor(this.model.get("score")));
+        this.scoreLabel.setString(Math.round(this.model.get("score")));
     },
     renderTime:function(){
         this.timeLabel.setString(Math.floor(this.model.get("year"))+".G.A");
@@ -191,7 +194,13 @@ var UILayer = cc.Layer.extend({
     },
     onGameOver:function(){
         this.stopAllActions();
-        cc.director.runScene( new GameOverScene({model:this.model}) );
+        if ( this.model.hasTech("multiverse-communication")) {
+            cc.director.runScene( new MultiverseTechScene({model:this.model}) );
+        } else cc.director.runScene( new GameOverScene({model:this.model}) );
+    },
+    onStartAscension:function(){
+        this.scienceItem.setNormalSpriteFrame(cc.spriteFrameCache.getSpriteFrame("icon-ascension.png"))
+        this.scienceItem.setSelectedSpriteFrame(cc.spriteFrameCache.getSpriteFrame("icon-ascension.png"))
     },
     showLog:function(text){
         if ( this.logLabel != null ) {
@@ -242,10 +251,13 @@ var MainGameLayer = cc.Layer.extend({
         this._initGalaxyEvent();
         this.yearPerSlot = 100/TIME_SLICE_COUNT;
 
-        this.showDialog("公元2112年6月15日10点10分10秒\n阿西莫夫号殖民船从太阳系启航前往α半人马座\n人类进入了银河纪元\n"+MAX_YEAR+"年时间里人类能将足迹踏遍银河吗？\n让我们拭目以待！", function(){
-            this.focusToGalaxyPosition(this.model.startingStarSystem.get("x"), this.model.startingStarSystem.get("y"), times.zoom);
-            this.model.startingStarSystem.colony._launch();
-            this.loop();
+        this.showInputName(function() {
+            showModalDialog(this.parent, "公元2112年6月15日10点10分10秒\n阿西莫夫号殖民船从太阳系启航前往α半人马座\n" + this.model.get("playerName") + "进入了银河纪元\n" +
+                MAX_YEAR + "年时间里他们能将足迹踏遍银河吗？\n让我们拭目以待！", function () {
+                this.focusToGalaxyPosition(this.model.startingStarSystem.get("x"), this.model.startingStarSystem.get("y"), times.zoom);
+                this.model.startingStarSystem.colony._launch();
+                this.loop();
+            }, this);
         },this);
 
         return true;
@@ -293,7 +305,7 @@ var MainGameLayer = cc.Layer.extend({
                 var name = target.getName();
                 //find starSystemModel by cid
                 var starSystemModel = self._starSystemModelByCid[name];
-
+                self.showStarSystemDetail(starSystemModel);
             }
         });
 
@@ -334,6 +346,8 @@ var MainGameLayer = cc.Layer.extend({
                 var colonyModel = self._colonyModelByCid[name];
                 colonyModel.shortenDisaster();
                 if ( gameModel.hasTech("psychohistory") ) colonyModel.shortenDisaster();
+
+                self.showColonyDetail( colonyModel);
             }
         });
 
@@ -367,6 +381,7 @@ var MainGameLayer = cc.Layer.extend({
             //Process the touch end event
             onTouchEnded: function (touch, event) {
                 var target = event.getCurrentTarget();
+                cc.eventManager.removeListener(target.__listener);
 
                 for ( var i = 0 ; i < self.__icon_position.length; i++ ){
                     var position = self.__icon_position[i];
@@ -443,6 +458,11 @@ var MainGameLayer = cc.Layer.extend({
 
         this.model.on("launch",this.onLaunchShip,this);
         this.model.on("disaster",this.onDisaster,this);
+        this.model.on("ascension",this.onStartAscension,this);
+    },
+    onStartAscension:function(){
+        showModalDialog(this.parent, "你的科技金字塔已经全部研发完毕\n你的种族将为进入更高维度的升华做准备。\n在接下来的游戏中\n科技点数将转换为升华点数计入总分。", function(){
+        },this);
     },
     onStarSystemColonized:function(starSystemModel) {
         var starSystemSprite = this.getChildByName(starSystemModel.cid);
@@ -549,13 +569,14 @@ var MainGameLayer = cc.Layer.extend({
             scienceIcon.runAction(new cc.scaleTo(0.25,1,1));
             scienceIcon._create_time = new Date().getTime();
             this.uiLayer.addChild(scienceIcon,10);
-            cc.eventManager.addListener(this.scienceIconClickListener.clone(), scienceIcon);
+            scienceIcon.__listener = this.scienceIconClickListener.clone();
+            cc.eventManager.addListener(scienceIcon.__listener, scienceIcon);
         } else {
             this.model.getScience(1);
             return;
         }
     },
-    showDialog:function(text, callback, context){
+    showInputName:function(callback,context){
         this._status = LOOP_PAUSE;
         var targets = this.actionManager.pauseAllRunningActions();
         var self = this;
@@ -567,41 +588,158 @@ var MainGameLayer = cc.Layer.extend({
 
         this.uiLayer.addChild(dialogBg,100);
 
-        var label = new cc.LabelTTF(text, null, dimens.top_bar_label);
+        var label = new cc.LabelTTF("请输入种族", null, dimens.top_bar_label);
         label.attr({
             color: colors.dialog_label,
             x: dialogBg.width/2,
-            y: dialogBg.height/3*2,
+            y: dialogBg.height - 50,
             anchorX: 0.5,
             anchorY: 0.5,
-            textAlign:cc.TEXT_ALIGNMENT_CENTER,
-            width: dialogBg.width*2,
-            height: dialogBg.height/3
+            textAlign:cc.TEXT_ALIGNMENT_CENTER
         });
         dialogBg.addChild(label);
 
-        var closeItem = new cc.MenuItemImage(
-            cc.spriteFrameCache.getSpriteFrame("close-default.png"),
-            cc.spriteFrameCache.getSpriteFrame("close-press.png"),
+        var textFieldBg = new cc.Sprite(cc.spriteFrameCache.getSpriteFrame("button-long-default.png"));
+        textFieldBg.attr({
+            x: dialogBg.width/2,
+            y: dialogBg.height - 100
+        });
+        dialogBg.addChild(textFieldBg);
+
+        var textField = new ccui.TextField();
+        textField.setTouchEnabled(true);
+        textField.fontName = "Arial";
+        textField.fontSize = dimens.top_bar_label;
+        textField.placeHolder = "种族名称";
+        textField.setTextColor(colors.dialog_label);
+        textField.setMaxLength(8);
+        textField.setMaxLengthEnabled(true);
+        textField.x = dialogBg.width/2;
+        textField.y = dialogBg.height - 100 - 4;
+        textField.addEventListener(function (sender, type) {
+            switch (type) {
+                case ccui.TextField.EVENT_ATTACH_WITH_IME:
+                    textField.runAction(cc.moveBy(0.225, cc.p(0, 5)));
+                    break;
+                case ccui.TextField.EVENT_DETACH_WITH_IME:
+                    textField.runAction(cc.moveBy(0.175, cc.p(0, -5)));
+                    break;
+                case ccui.TextField.EVENT_INSERT_TEXT:
+                    break;
+                case ccui.TextField.EVENT_DELETE_BACKWARD:
+                    break;
+                default:
+                    break;
+            }
+        }, this);
+        dialogBg.addChild(textField,5);
+
+        var label = new cc.LabelTTF("请输入母星名称", null, dimens.top_bar_label);
+        label.attr({
+            color: colors.dialog_label,
+            x: dialogBg.width/2,
+            y: dialogBg.height/2,
+            anchorX: 0.5,
+            anchorY: 0.5,
+            textAlign:cc.TEXT_ALIGNMENT_CENTER
+        });
+        dialogBg.addChild(label);
+
+        var textFieldBg = new cc.Sprite(cc.spriteFrameCache.getSpriteFrame("button-long-default.png"));
+        textFieldBg.attr({
+            x: dialogBg.width/2,
+            y: dialogBg.height/2 - 50
+        });
+        dialogBg.addChild(textFieldBg);
+
+        var textField2 = new ccui.TextField();
+        textField2.setTouchEnabled(true);
+        textField2.fontName = "Arial";
+        textField2.fontSize = dimens.top_bar_label;
+        textField2.placeHolder = "母星名称";
+        textField2.setTextColor(colors.dialog_label);
+        textField2.setMaxLength(5);
+        textField.setMaxLengthEnabled(true);
+        textField2.x = dialogBg.width/2;
+        textField2.y = dialogBg.height/2 - 50 - 4;
+        textField2.addEventListener(function (sender, type) {
+            switch (type) {
+                case ccui.TextField.EVENT_ATTACH_WITH_IME:
+                    textField2.runAction(cc.moveBy(0.225, cc.p(0, 5)));
+                    break;
+                case ccui.TextField.EVENT_DETACH_WITH_IME:
+                    textField2.runAction(cc.moveBy(0.175, cc.p(0, -5)));
+                    break;
+                case ccui.TextField.EVENT_INSERT_TEXT:
+                    break;
+                case ccui.TextField.EVENT_DELETE_BACKWARD:
+                    break;
+                default:
+                    break;
+            }
+        }, this);
+        dialogBg.addChild(textField2,5);
+
+        var store = cc.sys.localStorage.getItem("name");
+        if ( store != null ){
+            textField.setString(store)
+        } else {
+            textField.setString("地球人")
+        }
+
+        var store = cc.sys.localStorage.getItem("homeName");
+        if ( store != null ){
+            textField2.setString(store)
+        } else {
+            textField2.setString("地球")
+        }
+
+        var closeDialog = function(){
+            dialogBg.removeFromParent(true);
+            self.actionManager.resumeTargets(targets);
+            self._status = LOOP_START;
+            if (callback) callback.call(context);
+        }
+        var okItem = new cc.MenuItemImage(
+            cc.spriteFrameCache.getSpriteFrame("button-short-default.png"),
+            cc.spriteFrameCache.getSpriteFrame("button-short-press.png"),
             function () {
-                dialogBg.removeFromParent(true);
-                self.actionManager.resumeTargets(targets);
-                self._status = LOOP_START;
-                if (callback) callback.call(context);
+                var name = textField.getString();
+                var homeName = textField2.getString();
+                if ( name && name.trim() !== "" && homeName && homeName.trim() !== "" ) {
+                    name = name.trim();
+                    cc.sys.localStorage.setItem("name",name);
+                    this.model.set("playerName", name);
+
+                    homeName = homeName.trim();
+                    cc.sys.localStorage.setItem("homeName",homeName);
+                    this.model.set("homeName", homeName);
+
+                    this.model.startingColony.set("name", homeName);
+                    closeDialog();
+                }
             }, this);
-        closeItem.attr({
-            x: dialogBg.width - 25,
-            y: dialogBg.height - 25,
+        okItem.attr({
+            x: dialogBg.width /2,
+            y: 35,
             anchorX: 0.5,
             anchorY: 0.5
         });
+        var okLabel = new cc.LabelTTF(texts.confirm, null, 25 );
+        okLabel.attr({
+            color: colors.tech_detail_research,
+            x: 59,
+            y: 20,
+            anchorX: 0.5,
+            anchorY: 0.5
+        });
+        okItem.addChild(okLabel);
 
-        var menu = new cc.Menu([closeItem]);
+        var menu = new cc.Menu([okItem]);
         menu.x = 0;
         menu.y = 0;
         dialogBg.addChild(menu);
     },
-
     panAndScale:function(time){
         time = time || 0;
         var s = cc.scaleTo(time, this.scaleRate,this.scaleRate);
@@ -640,6 +778,9 @@ var MainGameLayer = cc.Layer.extend({
         if ( this.scaleRate * 2 <= MAX_SCALE ) {
             this.scaleRate *=2;
         } else this.scaleRate = MAX_SCALE;
+
+        this.uiLayer.zoomInItem.setEnabled(this.scaleRate < MAX_SCALE);
+        this.uiLayer.zoomOutItem.setEnabled(this.scaleRate > MIN_SCALE);
         this.panAndScale(times.zoom);
     },
     zoomOut:function(amount){
@@ -649,7 +790,59 @@ var MainGameLayer = cc.Layer.extend({
         if ( this.scaleRate / 2 >= MIN_SCALE ) {
             this.scaleRate /= 2;
         } else this.scaleRate = MIN_SCALE;
+
+        this.uiLayer.zoomInItem.setEnabled(this.scaleRate < MAX_SCALE);
+        this.uiLayer.zoomOutItem.setEnabled(this.scaleRate > MIN_SCALE);
         this.panAndScale(times.zoom);
+    },
+    showColonyDetail:function( colonyModel){
+        if ( this.currentSelectModel == colonyModel ) return;
+        if ( this.currentSelectModel ) {
+            if ( this.currentSelectModel instanceof StarSystemModel ) {
+                if ( this.starSystemDetailSprite ) this.starSystemDetailSprite.close();
+            } else if ( this.currentSelectModel instanceof ColonyModel ) {
+                if ( this.colonyDetailSprite ) this.colonyDetailSprite.close();
+            }
+            this.currentSelectModel = null;
+        }
+        this.currentSelectModel = colonyModel;
+        var starSystemSprite = this.getChildByName(colonyModel.starSystem.cid);
+        var targetX = starSystemSprite.convertToWorldSpace().x;
+        this.colonyDetailSprite = new ColonyDetailSprite({
+            x: targetX,
+            model: colonyModel,
+            callback:function(){
+                this.currentSelectModel = null;
+            },
+            context: this
+        });
+        this.uiLayer.addChild(this.colonyDetailSprite,50);
+        this.colonyDetailSprite.show();
+    },
+    showStarSystemDetail:function( starSystemModel){
+        if ( this.currentSelectModel == starSystemModel ) return;
+        if ( this.currentSelectModel ) {
+            if ( this.currentSelectModel instanceof StarSystemModel ) {
+                if ( this.starSystemDetailSprite ) this.starSystemDetailSprite.close();
+            } else if ( this.currentSelectModel instanceof ColonyModel ) {
+                if ( this.colonyDetailSprite ) this.colonyDetailSprite.close();
+            }
+            this.currentSelectModel = null;
+        }
+        this.currentSelectModel = starSystemModel;
+        var starSystemSprite = this.getChildByName(starSystemModel.cid);
+        var targetX = starSystemSprite.convertToWorldSpace().x;
+        this.starSystemDetailSprite = new StarSystemDetailSprite({
+            x: targetX,
+            starSystemModel: starSystemModel,
+            model: starSystemModel._bestPlanet,
+            callback:function(){
+                this.currentSelectModel = null;
+            },
+            context: this
+        });
+        this.uiLayer.addChild(this.starSystemDetailSprite,50);
+        this.starSystemDetailSprite.show();
     }
 });
 
@@ -659,6 +852,13 @@ var MainGameScene = cc.Scene.extend({
         if ( window.gameModel )
             return;
         window.gameModel = new GameModel();
+
+        var tech = cc.sys.localStorage.getItem("savedTech");
+        if ( tech ){
+            gameModel.set("savedTech",[tech]);
+            cc.sys.localStorage.removeItem("savedTech");
+        }
+
         gameModel.initAll();
         var uiLayer = new UILayer({model: gameModel})
         window.mainLayer = new MainGameLayer({uiLayer:uiLayer, model: gameModel});

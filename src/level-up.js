@@ -14,11 +14,12 @@ var TechLayer = cc.LayerColor.extend({
         this.options = options || {};
         this.model = this.options.model;
 
+        var self = this;
         var closeItem = new cc.MenuItemImage(
             cc.spriteFrameCache.getSpriteFrame("back-default.png"),
             cc.spriteFrameCache.getSpriteFrame("back-press.png"),
             function () {
-                cc.director.popScene();
+                self.closeLevelUp();
             }, this);
         closeItem.attr({
             x: 25,
@@ -30,7 +31,7 @@ var TechLayer = cc.LayerColor.extend({
         var menu = new cc.Menu([closeItem]);
         menu.x = 0;
         menu.y = 0;
-        this.addChild(menu, UI_Z_INDEX);
+        this.addChild(menu);
 
         var scienceIcon = new cc.Sprite(cc.spriteFrameCache.getSpriteFrame("icon-science.png"));
         scienceIcon.attr({
@@ -56,6 +57,12 @@ var TechLayer = cc.LayerColor.extend({
 
         this.currentSelectTechSprite = new cc.Sprite(cc.spriteFrameCache.getSpriteFrame("select-tech.png"));
     },
+    closeLevelUp:function(){
+        cc.director.popScene();
+        if ( this.model.isAllTechPyramidFull() ) {
+            this.model.trigger("ascension");
+        }
+    },
     onEnter:function(){
         this.model.on("change:science",this.renderScience,this);
         this._super();
@@ -69,7 +76,7 @@ var TechLayer = cc.LayerColor.extend({
     },
     renderPyramid:function(){
         //remove all view
-        if ( this.menu ) this.menu.removeFromParent(true);
+        if ( this.pyramid ) this.pyramid.removeFromParent(true);
         var padding = 10;
         var pyramidWidth = cc.winSize.width - 300 - padding*2;
         var pyramidHeight = cc.winSize.height - padding*2;
@@ -88,6 +95,13 @@ var TechLayer = cc.LayerColor.extend({
         var level = 0;
         var items = [];
 
+        //render extra tech
+        var extraX = techWidth/2 + paddingX;
+        var extraY = cc.winSize.height - 100;
+        _.each(this.model._extraTech,function(techModel){
+            this.pushCurrentTechItem(extraX, extraY, techModel, items, 0, scale);
+            extraY -= techHeight;
+        },this);
 
         _.each(this.model._tech,function(tier){
             _.each(tier,function(techModel){
@@ -109,10 +123,22 @@ var TechLayer = cc.LayerColor.extend({
             this.pushAddTechItem(currentX,currentY,level,items, scale);
         }
 
+        this.pyramid = new cc.Sprite();
+        this.pyramid.attr({
+            x: 0,
+            y: 0,
+            anchorX: 0,
+            anchorY: 0,
+            width: 500,
+            height: cc.winSize.height
+        });
+        this.addChild(this.pyramid);
+
         this.menu = new cc.Menu(items);
         this.menu.x = 0;
         this.menu.y = 0;
-        this.addChild(this.menu);
+        this.pyramid.addChild(this.menu);
+
     },
     pushCurrentTechItem:function(currentX, currentY,techModel, items, level, scale){
         var name = techModel.get("name");
@@ -166,15 +192,35 @@ var TechLayer = cc.LayerColor.extend({
         items.push(addTechItem);
     },
     onClickTech:function(techModel, level,x, y, scale){
-        this.currentSelectTechSprite.x = x;
-        this.currentSelectTechSprite.y = y;
-        this.currentSelectTechSprite.scaleX = scale;
-        this.currentSelectTechSprite.scaleY = scale;
-        this.currentSelectTechSprite.removeFromParent();
+
         if ( gameModel.hasTech(techModel) ) {
-            this.addChild(this.currentSelectTechSprite,100);
+            if ( this.currentSelectTechSprite.parent == this ) {
+                this.currentSelectTechSprite.stopAllActions();
+                this.currentSelectTechSprite.runAction( new cc.spawn(new cc.moveTo(0.3, x, y ),
+                    new cc.scaleTo(0.3, scale, scale ) ) );
+            } else {
+                this.currentSelectTechSprite.x = x;
+                this.currentSelectTechSprite.y = y;
+                this.currentSelectTechSprite.scaleX = scale;
+                this.currentSelectTechSprite.scaleY = scale;
+                this.currentSelectTechSprite.removeFromParent();
+                this.addChild(this.currentSelectTechSprite,100);
+            }
         } else {
-            this.techListBg.addChild(this.currentSelectTechSprite,100);
+            if ( this.currentSelectTechSprite.parent == this.techListBg ) {
+                this.currentSelectTechSprite.stopAllActions();
+                this.currentSelectTechSprite.runAction( new cc.spawn(new cc.moveTo(0.3, x, y ),
+                    new cc.scaleTo(0.3, scale, scale ) ) );
+            } else {
+                this.currentSelectTechSprite.x = x;
+                this.currentSelectTechSprite.y = y;
+                this.currentSelectTechSprite.scaleX = scale;
+                this.currentSelectTechSprite.scaleY = scale;
+                this.currentSelectTechSprite.removeFromParent();
+                this.techListBg.addChild(this.currentSelectTechSprite,100);
+            }
+//            this.currentSelectTechSprite.removeFromParent();
+//            this.techListBg.addChild(this.currentSelectTechSprite,100);
         }
         this.showTechDetail(techModel, level, null, null);
     },
@@ -191,6 +237,7 @@ var TechLayer = cc.LayerColor.extend({
         var offsetX = techDetailBgWidth - 16;
         if ( this.techDetailBg ) {
             var tempBg = this.techDetailBg;
+            tempBg.stopAllActions();
             tempBg.runAction(cc.sequence(cc.moveBy(times.show_tech_detail, offsetX, 0),
                 cc.callFunc(function(){
                     tempBg.removeFromParent();
@@ -225,7 +272,11 @@ var TechLayer = cc.LayerColor.extend({
 
         this.renderTechTypes(techModel, this.techDetailBg, 140,techDetailBgHeight - 70, 1, 55);
 
-        var techDescriptionLabel = new cc.LabelTTF(techModel.getDescription(), null, dimens.tech_detail_tech_description);
+        var desc = techModel.getDescription();
+        if ( techModel._isFromMultiverse ) {
+            desc += "\n（本科技来自平行宇宙）"
+        }
+        var techDescriptionLabel = new cc.LabelTTF(desc, null, dimens.tech_detail_tech_description);
         var y = techDetailBgHeight - 120;
         techDescriptionLabel.attr({
             color: colors.tech_detail_tech_description,
@@ -297,6 +348,7 @@ var TechLayer = cc.LayerColor.extend({
             this.techDetailBg.addChild(techFlavorLabel);
         }
 
+        this.techDetailBg.stopAllActions();
         this.techDetailBg.runAction(cc.moveBy(times.show_tech_detail, -offsetX, 0));
 
         var buttonItem = new cc.MenuItemImage(
@@ -311,13 +363,16 @@ var TechLayer = cc.LayerColor.extend({
                     this.renderPyramid();
                     if ( callback ) callback.call(context);
                 }
-                var tempBg = this.techDetailBg;
-                this.techDetailBg = null;
-                this.currentShowingTechModel = null;
-                tempBg.runAction(cc.sequence(cc.moveBy(times.show_tech_detail, offsetX, 0),
-                    cc.callFunc(function(){
-                        tempBg.removeFromParent();
-                    },this)));
+                if ( this.techDetailBg ) {
+                    var tempBg = this.techDetailBg;
+                    this.techDetailBg = null;
+                    this.currentShowingTechModel = null;
+                    tempBg.stopAllActions();
+                    tempBg.runAction(cc.sequence(cc.moveBy(times.show_tech_detail, offsetX, 0),
+                        cc.callFunc(function () {
+                            tempBg.removeFromParent();
+                        }, this)));
+                }
             }, this);
         buttonItem.attr({
             x: techDetailBgWidth/2-7,
@@ -366,6 +421,7 @@ var TechLayer = cc.LayerColor.extend({
     hideTechList:function(){
         if ( this.techListBg ) {
             var tempBg = this.techListBg;
+            tempBg.stopAllActions();
             tempBg.runAction(cc.sequence(cc.moveBy(times.show_tech_detail, - 530 + 16, 0),
                 cc.callFunc(function(){
                     tempBg.removeFromParent();
@@ -418,7 +474,7 @@ var TechLayer = cc.LayerColor.extend({
         })
         scienceIcon.addChild(scienceLabel);
 
-
+        this.techListBg.stopAllActions();
         this.techListBg.runAction(cc.moveBy(times.show_tech_detail, -offsetX, 0));
         cc.eventManager.addListener(cc.EventListener.create({
             event: cc.EventListener.TOUCH_ONE_BY_ONE,

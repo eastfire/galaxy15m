@@ -72,7 +72,7 @@
             <key>star-gaint.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,100},{48,48}}</string>
+                <string>{{444,2},{48,48}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -85,7 +85,7 @@
             <key>star-gaint2.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{52,100},{48,48}}</string>
+                <string>{{494,2},{48,48}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -98,7 +98,7 @@
             <key>star-sun.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{102,100},{32,32}}</string>
+                <string>{{544,2},{32,32}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -111,7 +111,7 @@
             <key>star1.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{136,100},{32,32}}</string>
+                <string>{{578,2},{32,32}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -124,7 +124,7 @@
             <key>tech-anti-gravity.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{170,100},{96,96}}</string>
+                <string>{{612,2},{96,96}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -137,7 +137,7 @@
             <key>tech-anti-matter.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{268,100},{96,96}}</string>
+                <string>{{710,2},{96,96}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -150,7 +150,7 @@
             <key>tech-bionics.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{366,100},{96,96}}</string>
+                <string>{{808,2},{96,96}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -163,7 +163,7 @@
             <key>tech-clone-human.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,198},{96,96}}</string>
+                <string>{{906,2},{96,96}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -176,7 +176,7 @@
             <key>tech-cure-cancer.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{100,198},{96,96}}</string>
+                <string>{{1004,2},{96,96}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -189,7 +189,7 @@
             <key>tech-cure-old.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{100,198},{96,96}}</string>
+                <string>{{1004,2},{96,96}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -202,7 +202,7 @@
             <key>tech-dyson-sphere.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{198,198},{96,96}}</string>
+                <string>{{1102,2},{96,96}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -215,7 +215,7 @@
             <key>tech-exoskeleton.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{296,198},{96,96}}</string>
+                <string>{{1200,2},{96,96}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -228,7 +228,59 @@
             <key>tech-fusion-drive.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{394,198},{96,96}}</string>
+                <string>{{1298,2},{96,96}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{96,96}}</string>
+                <key>sourceSize</key>
+                <string>{96,96}</string>
+            </dict>
+            <key>tech-gill.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{1396,2},{96,96}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{96,96}}</string>
+                <key>sourceSize</key>
+                <string>{96,96}</string>
+            </dict>
+            <key>tech-group-mind.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{2,100},{96,96}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{96,96}}</string>
+                <key>sourceSize</key>
+                <string>{96,96}</string>
+            </dict>
+            <key>tech-intelligent-ape.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{100,100},{96,96}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{96,96}}</string>
+                <key>sourceSize</key>
+                <string>{96,96}</string>
+            </dict>
+            <key>tech-intelligent-dolphin.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{198,100},{96,96}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -241,7 +293,7 @@
             <key>tech-meaning-of-life.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,296},{96,96}}</string>
+                <string>{{296,100},{96,96}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -254,7 +306,20 @@
             <key>tech-memory-storage.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{100,296},{96,96}}</string>
+                <string>{{394,100},{96,96}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{96,96}}</string>
+                <key>sourceSize</key>
+                <string>{96,96}</string>
+            </dict>
+            <key>tech-multiverse-communication.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{492,100},{96,96}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -267,7 +332,7 @@
             <key>tech-nanobot.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{198,296},{96,96}}</string>
+                <string>{{590,100},{96,96}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -280,7 +345,7 @@
             <key>tech-psychohistory.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{296,296},{96,96}}</string>
+                <string>{{688,100},{96,96}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -293,7 +358,7 @@
             <key>tech-quantum-communication.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{394,296},{96,96}}</string>
+                <string>{{786,100},{96,96}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -306,7 +371,7 @@
             <key>tech-space-elevator.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,394},{96,96}}</string>
+                <string>{{884,100},{96,96}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -319,7 +384,7 @@
             <key>tech-spirit-of-adventure.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{100,394},{96,96}}</string>
+                <string>{{982,100},{96,96}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -332,7 +397,20 @@
             <key>tech-spirit-of-science.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{198,394},{96,96}}</string>
+                <string>{{1080,100},{96,96}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{96,96}}</string>
+                <key>sourceSize</key>
+                <string>{96,96}</string>
+            </dict>
+            <key>tech-time-machine.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{1178,100},{96,96}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -345,7 +423,7 @@
             <key>tech-virtual-reality.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{296,394},{96,96}}</string>
+                <string>{{1276,100},{96,96}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -358,7 +436,7 @@
             <key>tech-warp-engine.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{394,394},{96,96}}</string>
+                <string>{{1374,100},{96,96}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -376,9 +454,9 @@
             <key>realTextureFileName</key>
             <string>stars.png</string>
             <key>size</key>
-            <string>{492,492}</string>
+            <string>{1494,198}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:f15355fa349cbaa57c7c0ccbc40aa079:7a3bd16ed902ebd440b72f2513dc8f5a:a283aa680c40f7aba299fc6537de2290$</string>
+            <string>$TexturePacker:SmartUpdate:670759e719577478814215e3f6f90295:0fa1740fd0602eb8e848521c428da23d:a283aa680c40f7aba299fc6537de2290$</string>
             <key>textureFileName</key>
             <string>stars.png</string>
         </dict>

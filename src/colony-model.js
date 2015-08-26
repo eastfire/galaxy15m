@@ -53,7 +53,6 @@ var ColonyModel = Backbone.Model.extend({
             populationGrowRate: 0,
             maxPopulation: 10000,
 
-            plant: null,
 
             currentDisaster: null,
             disasterCountDown: 0,
@@ -100,6 +99,7 @@ var ColonyModel = Backbone.Model.extend({
             this._launch();
         }
         this._evaluateDisaster();
+        this.trigger("evaluate");
     },
     _canLaunch:function(){
         this._launchAccumulate += this.get("launchRate");
@@ -166,16 +166,16 @@ var ColonyModel = Backbone.Model.extend({
     getCrisisRateEffectText:function(type){
     },
     _evaluateMaxPopulation:function(){
-        var maxPopulation = this.get("maxPopulation");
+        var maxPopulation = this.planet.get("maxPopulation");
         maxPopulation = gameModel.techEffect("maxPopulation", maxPopulation);
         this.set("maxPopulation",maxPopulation);
     },
     _evaluatePopulationGrowRate:function(){
         var currentPopulation = this.get("population");
-        var maxPopulation = this.get("maxPopulation");
+        var maxPopulation = this.planet.get("maxPopulation");
         var rate = 0;
         if ( this.get("currentDisasterType") ) {
-            rate = 0.01;
+            rate = 0;
             rate = gameModel.techEffect("disasterPopulationGrowRate", rate);
         } else {
             if (currentPopulation >= maxPopulation) {
@@ -211,8 +211,9 @@ var ColonyModel = Backbone.Model.extend({
     _evaluateWarDisaster:function(){
         var currentPopulation = this.get("population");
         var maxPopulation = this.get("maxPopulation");
+        var maxPopulationWarThreshold = gameModel.get("maxPopulationWarThreshold");
         var rate = 0;
-        if ( currentPopulation >= maxPopulation ) {
+        if ( currentPopulation >= maxPopulation && currentPopulation >= maxPopulationWarThreshold ) {
             rate = gameModel.get("maxPopulationIncreaseWarRate");
         }
         rate = gameModel.techEffect("warRate", rate);
@@ -221,7 +222,7 @@ var ColonyModel = Backbone.Model.extend({
             this._warAccumulate = 0;
             var value = this.get("population") * (Math.random()*0.5);
             this.losePopulation(value);
-            var countDown = Math.round(Math.random()*20)+10;
+            var countDown = Math.round(Math.random()*10)+20;
             countDown = adjust = gameModel.techEffect("disasterLength", countDown);
             this.set({
                 currentDisasterType: "war",
@@ -248,7 +249,7 @@ var ColonyModel = Backbone.Model.extend({
             change = maxPopulation - currentPopulation;
         }
         if ( change > 0 ) {
-            window.gameModel.getScore(change);
+            window.gameModel.getScore(change/10000);
         }
         if ( change != 0 ) {
             window.gameModel.getPopulation(change);
@@ -261,6 +262,8 @@ var ColonyModel = Backbone.Model.extend({
             return;
         }
         var production;
+        var population = this.get("population");
+        var maxPopulationLaunchThreshold = gameModel.get("maxPopulationLaunchThreshold");
         if ( this.get("currentDisasterType") ) {
             production = 0;
         } else {
@@ -268,7 +271,7 @@ var ColonyModel = Backbone.Model.extend({
 
             var rate = 1;
             rate = gameModel.techEffect("launchRate", rate);
-            if ( this.get("population") >= this.get("maxPopulation") )
+            if ( population >= this.get("maxPopulation") && population >= maxPopulationLaunchThreshold )
                 rate += gameModel.get("maxPopulationIncreaseLaunchRate");
 
             production *= rate;
@@ -287,12 +290,15 @@ var ColonyModel = Backbone.Model.extend({
         if ( adjust != 0 ) {
             var science = this.get("population") / 1000000 ;
             science *= adjust;
+            this.set("scienceGenerate",science);
             if ( mainLayer._scienceIconNumber < MAX_SCIENCE_ICON && Math.random() < science / 10 ) {
                 if ( science > 1 ) science -= 1;
                 else science = 0;
                 this.trigger("showScienceIcon",this);
             }
             window.gameModel.getScience(science);
+        } else {
+            this.set("scienceGenerate",0);
         }
     },
     vanished:function(){

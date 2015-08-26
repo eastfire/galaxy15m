@@ -26,6 +26,9 @@ var dimens = {
     tech_detail_tech_flavor: 14,
     tech_detail_research: 16,
 
+    colony_detail_name: 20,
+    colony_label: 18,
+
     congratulation: 50,
     game_over_continue: 20,
     score_board_title_font_size: 36,
@@ -46,25 +49,25 @@ var colors = {
     tech_detail_tech_name: cc.color.WHITE,
     tech_detail_tech_description: cc.color.WHITE,
     tech_detail_tech_flavor: new cc.Color(0xcc,0xcc,0xcc),
-    tech_detail_research: cc.color.WHITE
+    tech_detail_research: cc.color.WHITE,
+
+    colony_label: cc.color.WHITE
 }
 
 var texts = {
     confirm: "确定",
     continue: "继续",
+    check_score_board: "查看排名",
     restart: "再来一次大爆炸",
 
-    engineType:{
-        nuclear: "裂变驱动",
-        fusion: "聚变驱动",
-        em: "电磁驱动",
-        warp: "曲率驱动"
-    },
-    shipType:{
-        generation: "世代船",
-        hibernation: "冬眠船",
-        shuttle:"穿梭船"
-    },
+
+    population: "人口: ",
+    max_population: "承载上限: ",
+    populationGrow: "人口增长: ",
+    launch_rate: "殖民船发射率: ",
+    science_grow: "科技增加 ",
+    per100Year: "每100年",
+
     colonyDisaster: {
         ai:"AI暴动统治人类",
         asteroid: "遭受小行星撞击",
@@ -73,26 +76,22 @@ var texts = {
         virus: "致命病毒爆发",
         war: "爆发了核大战"
     },
-    shipDisaster: {
-        ai: "AI叛变",
-        lost: "迷失太空",
-        riot: "哗变",
-        mechanical: "机械故障"
-    },
+    planet_types:["",
+    "气态（类木）行星",
+    "固态（类地）行星"],
 
-    technology: {
-        fusion:"核聚变",
-        "heat-resistance-material":"耐超高温材料",
-        hibernation:"冬眠仓"
-    },
-    dna:{
-        "cold-resistance":"抵御寒冷",
-        "heat-resistance":"抵御酷热"
-    },
-    spiritual: {
-        "world-government":"世界政府",
-        "mind-control":"思维控制",
-        "group-awareness":"群体意识",
-        mindDrive:"思动"
-    }
+    atmosphere: [
+        "",
+        "无",
+        "稀薄",
+        "正常",
+        "浓厚",
+    ],
+    atmosphere_quality: [
+        "无毒",
+        "有毒",
+        "剧毒"
+    ],
+
+    "please_choose_tech_for_next_game": "请选择1个科技作为下次游戏的起始科技"
 }

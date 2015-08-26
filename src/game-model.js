@@ -24,8 +24,8 @@ var GameModel = Backbone.Model.extend({
             unlockedTech: [
                 ["exoskeleton","space-elevator","virtual-reality","memory-storage", "spirit-of-science","bionic"],
                 ["anti-gravity","fusion-drive","clone-human","cure-cancer","psychohistory","spirit-of-adventure"],
-                ["anti-matter","cure-old","multiverse-communication"],
-                ["warp-engine","exoskeleton"],
+                ["anti-matter","cure-old","multiverse-communication","intelligent-dolphin"],
+                ["warp-engine","intelligent-ape"],
                 ["dyson-sphere","meaning-of-life","time-machine","group-mind"]
             ],
             maxTechLevel: 5,

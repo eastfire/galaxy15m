@@ -19,12 +19,13 @@ var times = {
 
 var dimens = {
     top_bar_label: 20,
-    log_label_text_size: 14,
+    log_label_text_size: 16,
 
-    tech_detail_tech_name : 20,
-    tech_detail_tech_description: 18,
-    tech_detail_tech_flavor: 14,
-    tech_detail_research: 16,
+    tech_detail_tech_name : 22,
+    tech_detail_tech_description: 20,
+    tech_detail_tech_discount: 18,
+    tech_detail_tech_flavor: 18,
+    tech_detail_research: 18,
 
     colony_detail_name: 20,
     colony_label: 18,

@@ -74,11 +74,12 @@ var ColonyDetailSprite = cc.Scale9Sprite.extend({
             anchorY: 0.5
         })
         this.addChild(this.populationLabel);
+        y -= lineHeight;
 
         this.maxPopulationLabel = new cc.LabelTTF("", null, dimens.colony_label);
         this.maxPopulationLabel.attr({
             color: colors.log_label,
-            x: colonyDetailBgWidth/2,
+            x: 30,
             y: y,
             anchorX: 0,
             anchorY: 0.5

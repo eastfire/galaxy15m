@@ -113,30 +113,35 @@ var StarSystemDetailSprite = cc.Scale9Sprite.extend({
         y -= lineHeight;
 
         if ( this.model.get("type") === CORE_SOLID ) {
-            if ( this.model.get("seaCoverage") ) {
-                var superficialAreaLabel = new cc.LabelTTF("陆地"+Math.round(this.model.get("landCoverage")*100)+"%   海洋"+
-                    Math.round(this.model.get("seaCoverage")*100)+"%", null, dimens.colony_label);
-                superficialAreaLabel.attr({
-                    color: colors.log_label,
-                    x: 30,
-                    y: y,
-                    anchorX: 0,
-                    anchorY: 0.5
-                })
-                this.addChild(superficialAreaLabel);
-                y -= lineHeight;
+            var superficialAreaLabel = new cc.LabelTTF("陆地"+Math.round(this.model.get("landCoverage")*100)+"% 可承载"+
+                bigNumberToHumanReadable_zh_cn(this.model.get("landSuperficialArea")*this.model.get("landUsage"))+"人", null, dimens.colony_label);
+            superficialAreaLabel.attr({
+                color: colors.log_label,
+                x: 30,
+                y: y,
+                anchorX: 0,
+                anchorY: 0.5
+            })
+            this.addChild(superficialAreaLabel);
+            y -= lineHeight;
+
+            var seaStr;
+            if ( !this.model.get("seaCoverage") ) {
+                seaStr = "没有海洋";
             } else {
-                var superficialAreaLabel = new cc.LabelTTF("没有海洋", null, dimens.colony_label);
-                superficialAreaLabel.attr({
-                    color: colors.log_label,
-                    x: 30,
-                    y: y,
-                    anchorX: 0,
-                    anchorY: 0.5
-                })
-                this.addChild(superficialAreaLabel);
-                y -= lineHeight;
+                seaStr = "海洋"+Math.round(this.model.get("seaCoverage")*100)+"% 可承载"+
+                    bigNumberToHumanReadable_zh_cn(this.model.get("seaSuperficialArea")*this.model.get("seaUsage"))+"人";
             }
+            var seaSuperficialAreaLabel = new cc.LabelTTF(seaStr, null, dimens.colony_label);
+            seaSuperficialAreaLabel.attr({
+                color: colors.log_label,
+                x: 30,
+                y: y,
+                anchorX: 0,
+                anchorY: 0.5
+            })
+            this.addChild(seaSuperficialAreaLabel);
+            y -= lineHeight;
         }
 
         var str = "大气层："+texts.atmosphere[this.model.get("atmosphere")];

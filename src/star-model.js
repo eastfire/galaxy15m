@@ -356,7 +356,7 @@ var PlanetModel = Backbone.Model.extend({ //行星
                     "temperature": TEMPERATURE_VERY_HIGH,
                     "displayTemperature": Math.random() * 100 + 100,
                     "gravity": _.sample([GRAVITY_LOW, GRAVITY_NORMAL]),
-                    "superficialArea": Math.round(Math.random() * 300) / 100
+                    "superficialArea": Math.round( (Math.random() * 0.5 + 0.5)*100 ) / 100
                 });
             } else if ( level < 4 ) {
                 this.set({

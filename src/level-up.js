@@ -297,7 +297,7 @@ var TechLayer = cc.LayerColor.extend({
             str = "左侧基础奖励：{[icon-science-small]}需求-"+Math.round(leftMatch*discountPerMatch*100)+"%"
             var discountLabel = buildRichText({
                 str : str,
-                fontSize : dimens.tech_detail_tech_description,
+                fontSize : dimens.tech_detail_tech_discount,
                 fontColor: colors.tech_detail_tech_description,
                 width: 240,
                 height: 20
@@ -316,7 +316,7 @@ var TechLayer = cc.LayerColor.extend({
             str = "右侧基础奖励：{[icon-science-small]}需求-"+Math.round(rightMatch*discountPerMatch*100)+"%"
             var discountLabel = buildRichText({
                 str : str,
-                fontSize : dimens.tech_detail_tech_description,
+                fontSize : dimens.tech_detail_tech_discount,
                 fontColor: colors.tech_detail_tech_description,
                 width: 240,
                 height: 20

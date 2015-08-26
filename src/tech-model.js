@@ -122,7 +122,7 @@ var CloneHuman = TechModel.extend({
             tier: 1,
             cost: 20,
             types: [TECH_TYPE_BIOLOGICAL],
-            flavor: null
+            flavor: "与其说是技术的突破，不如说是伦理的突破"
         }
     },
     getDescription:function(){
@@ -264,7 +264,58 @@ var GroupMind = TechModel.extend({
         return "加"+Math.round(this.effect*100)+"%人性";
     },
     onGain:function(){
-        gameModel.set("humanity", gameModel.get("humanity")+this.effect);;
+        gameModel.set("humanity", gameModel.get("humanity")+this.effect);
+    }
+});
+
+var IntelligentDolphin = TechModel.extend({
+    effect: 100000,
+    defaults:function(){
+        return {
+            displayName : "智能海豚",
+            name: "intelligent-dolphin",
+            tier: 2,
+            cost: 120,
+            types: [TECH_TYPE_PSYCHOLOGY, TECH_TYPE_BIOLOGICAL],
+            flavor: ""
+        }
+    },
+    getDescription:function(){
+        return "海洋可以多承载"+bigNumberToHumanReadable_zh_cn(this.effect)+"人每亿km²";
+    },
+    onGain:function(){
+        _.each(gameModel._stars,function(starSystemModel){
+            var planet = starSystemModel._bestPlanet;
+            if ( planet.get("seaCoverage") ) {
+                planet.set("seaUsage", planet.get("seaUsage") + this.effect);
+                planet.calSupportPopulation();
+            }
+        },this);
+    }
+});
+
+var IntelligentApe = TechModel.extend({
+    effect: 0.2,
+    defaults:function(){
+        return {
+            displayName : "智能猩猩",
+            name: "intelligent-ape",
+            tier: 3,
+            cost: 600,
+            types: [TECH_TYPE_PSYCHOLOGY, TECH_TYPE_BIOLOGICAL],
+            flavor: ""
+        }
+    },
+    getDescription:function(){
+        return "科技增长加"+Math.round(this.effect*100)/100+"% 飞船发射率加"+Math.round(this.effect*100)/100+"%";
+    },
+    onGain:function(){
+        gameModel.registerEffectingTech("scienceAdjust", this, function(rate){
+            return rate+this.effect;
+        });
+        gameModel.registerEffectingTech("launchRate", this, function(rate){
+            return rate+this.effect;
+        });
     }
 });
 
@@ -504,6 +555,8 @@ var CLASS_MAP = {
     exoskeleton: Exoskeleton,
     "fusion-drive":FusionDrive,
     "group-mind":GroupMind,
+    "intelligent-ape":IntelligentApe,
+    "intelligent-dolphin":IntelligentDolphin,
     "meaning-of-life":MeaningOfLife,
     "memory-storage":MemoryStorage,
     "multiverse-communication":MultiverseCommunication,

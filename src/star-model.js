@@ -429,73 +429,62 @@ var PlanetModel = Backbone.Model.extend({ //行星
         this.set("seaSuperficialArea", this.get("superficialArea")*this.get("seaCoverage"));
         this.set("airSuperficialArea", this.get("superficialArea")*this.get("airCoverage"));
 
-        var landUsage = 811359;
+        var landUsage = 800000;
         var seaUsage = 0;
         var airUsage = 0;
+
+        var penalty = 0;
 //temperature penalty
         var temperature = this.get("temperature");
         if ( temperature == TEMPERATURE_VERY_LOW || temperature == TEMPERATURE_VERY_HIGH ) {
-            landUsage = 0;
-            seaUsage = 0;
-            airUsage = 0;
+            penalty += 1;
         } else if ( temperature == TEMPERATURE_LOW || temperature == TEMPERATURE_HIGH ) {
-            landUsage /= 3;
-            seaUsage /= 3;
-            airUsage /= 3;
+            penalty += 0.3;
         }
 //gravity penalty
         var gravity = this.get("gravity");
         if ( gravity == GRAVITY_VERY_HIGH ) {
-            landUsage = 0;
-            seaUsage = 0;
-            airUsage = 0;
+            penalty += 1;
         } else if ( gravity == GRAVITY_HIGH ) {
-            landUsage /= 3;
-            seaUsage /= 3;
-            airUsage /= 3;
+            penalty += 0.3;
         }
 //atmosphere penalty
         var atmosphere = this.get("atmosphere");
         if ( atmosphere == ATMOSPHERE_NONE ) {
-            airUsage = 0;
-            landUsage = 0;
-            seaUsage = 0;
+            penalty += 1;
         } else if ( atmosphere == ATMOSPHERE_THIN ) {
-            airUsage = 0;
-            landUsage /= 3;
-            seaUsage /= 3;
-        } else if ( atmosphere == ATMOSPHERE_THICK ) {
-            seaUsage /= 3;
+            penalty += 0.3;
         }
 
         var atmosphericQuality = this.get("atmosphericQuality");
         if ( atmosphericQuality === ATMOSPHERE_LITTLE_POISON ) {
-            airUsage /= 4;
-            landUsage /= 2;
+            penalty += 0.2;
         } else if ( atmosphericQuality === ATMOSPHERE_LOTS_POISON ) {
-            airUsage = 0;
-            landUsage = 0;
+            penalty = 1;
         }
-//waterQuality penalty
-        var waterQuality = this.get("waterQuality");
-        if ( waterQuality === WATER_LITTLE_POISON ) {
-            seaUsage /= 4;
-        } else if ( atmosphericQuality === WATER_LOTS_POISON ) {
-            seaUsage = 0;
-        }
+////waterQuality penalty
+//        var waterQuality = this.get("waterQuality");
+//        if ( waterQuality === WATER_LITTLE_POISON ) {
+//            seaUsage /= 4;
+//        } else if ( atmosphericQuality === WATER_LOTS_POISON ) {
+//            seaUsage = 0;
+//        }
 
         this.set("landUsage", landUsage );
         this.set("seaUsage", seaUsage);
         this.set("airUsage", airUsage);
+        this.set("penalty", penalty);
 
         this.calSupportPopulation();
 
         this.on("change:landUsage,change:seaUsage,change:airUsage",this.calSupportPopulation, this);
     },
     calSupportPopulation:function(){
-        var maxPopulation = this.get("landSuperficialArea")*this.get("landUsage") +
-            this.get("seaSuperficialArea")*this.get("seaUsage") +
-            this.get("airSuperficialArea")*this.get("airUsage");
+        var penalty = this.get("penalty")
+        var discount = 1 - Math.min(1, penalty);
+        var maxPopulation = this.get("landSuperficialArea")*this.get("landUsage")*discount +
+            this.get("seaSuperficialArea")*this.get("seaUsage")*discount +
+            this.get("airSuperficialArea")*this.get("airUsage")*discount;
 
         this.set("maxPopulation", Math.max(maxPopulation, 120) );
 

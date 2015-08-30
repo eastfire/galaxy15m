@@ -6,6 +6,7 @@ var TIME_SLOT_LENGTH = 1/TIME_SLICE_COUNT;
 var UP_SCALE_RATE = 20;
 var START_YEAR = 0;
 var MAX_YEAR = 100000;
+var MAX_SHIP_NUMBER = 250;
 
 var GameModel = Backbone.Model.extend({
     defaults: function () {
@@ -22,10 +23,10 @@ var GameModel = Backbone.Model.extend({
             savedTech: [],
             initTech: [["quantum-communication"]],
             unlockedTech: [
-                ["exoskeleton","space-elevator","virtual-reality","memory-storage", "spirit-of-science","bionic"],
-                ["anti-gravity","fusion-drive","clone-human","cure-cancer","psychohistory","spirit-of-adventure"],
-                ["anti-matter","cure-old","multiverse-communication","intelligent-dolphin"],
-                ["warp-engine","intelligent-ape"],
+                ["exoskeleton","space-elevator","virtual-reality","memory-storage", "spirit-of-science","bionic","nanobot"],
+                ["anti-gravity","fusion-drive","clone-human","cure-cancer","psychohistory","spirit-of-adventure","gill"],
+                ["anti-matter","cure-old","multiverse-communication","intelligent-dolphin","resistance-cold","resistance-heat"],
+                ["warp-engine","intelligent-ape","wing","telekinesis"],
                 ["dyson-sphere","meaning-of-life","time-machine","group-mind"]
             ],
             maxTechLevel: 5,
@@ -103,6 +104,7 @@ var GameModel = Backbone.Model.extend({
         techModel.onGain();
     },
     initAll:function(){
+        this._shipCount = 0;
         this._initTech();
         this._generateGalaxy();
         this._initColony();
@@ -178,18 +180,15 @@ var GameModel = Backbone.Model.extend({
             this.trigger("gameover",this);
         }
     },
+    hasMaxShip:function(){
+        return this._shipCount >= MAX_SHIP_NUMBER;
+    },
     addShip:function(ship){
-        //TODO add log
-
-        var slot = Math.floor(Math.random()*TIME_SLICE_COUNT);
-        ship.timeSlot = slot;
-        this._ships[slot].push(ship);
+        this._shipCount ++;
         this.trigger("launch", ship);
     },
     removeShip:function(ship){
-        var slot = ship.timeSlot;
-        var index = _.indexOf(this._ships[slot], ship);
-        this._ships[slot].splice(index,1);
+        this._shipCount --;
     },
     getPopulation:function(change) {
         this.set("totalPopulation",this.get("totalPopulation")+change);
@@ -206,13 +205,6 @@ var GameModel = Backbone.Model.extend({
         var colonyList = this._colonies[timeSlot];
         _.each( colonyList, function( colony ) {
             colony.evaluate();
-        });
-    },
-    evaluateShips:function(timeSlot){
-        if ( timeSlot >= TIME_SLICE_COUNT ) return;
-        var shipList = this._ships[timeSlot];
-        _.each( shipList, function( ship ) {
-            ship.evaluate();
         });
     },
     _generateGalaxy:function(){

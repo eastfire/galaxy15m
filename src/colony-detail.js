@@ -165,7 +165,7 @@ var ColonyDetailSprite = cc.Scale9Sprite.extend({
         this.model.on("evaluate",this.render,this);
     },
     render:function(){
-        this.disasterLabel.setVisible(this.model.get("disasterCountDown"));
+        this.disasterLabel.setVisible(this.model.get("disasterCountDown")>0);
         this.disasterLabel.setString("文明衰退中,还有"+this.model.get("disasterCountDown")*100+"年。");
         this.populationLabel.setString(texts.population+bigNumberToHumanReadable_zh_cn(this.model.get("population")));
         this.maxPopulationLabel.setString(texts.max_population+bigNumberToHumanReadable_zh_cn(this.model.get("maxPopulation")));

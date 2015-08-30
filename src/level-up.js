@@ -5,7 +5,8 @@ var typeFrame = [
     "icon-type-atomic.png",
     "icon-type-dna.png",
     "icon-type-mind.png",
-    "icon-type-mechanical.png"
+    "icon-type-mechanical.png",
+    "icon-type-electronic.png"
 ];
 
 var TechLayer = cc.LayerColor.extend({

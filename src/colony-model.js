@@ -102,6 +102,8 @@ var ColonyModel = Backbone.Model.extend({
         this.trigger("evaluate");
     },
     _canLaunch:function(){
+        if ( gameModel.hasMaxShip() ) return false;
+
         this._launchAccumulate += this.get("launchRate");
         if ( this._launchAccumulate >= 1 ) {
             this._launchAccumulate = 0;

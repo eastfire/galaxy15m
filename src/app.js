@@ -509,6 +509,7 @@ var MainGameLayer = cc.Layer.extend({
             scaleY: 0.25
         });
         this.addChild(shipSprite,5);
+
         var time = distance / shipModel.get("speed");
         this.uiLayer.showLog(shipModel.get("name")+"从 "+from.get("name")+" 启航前往 "+to.get("name")+"，预计耗时" +Math.round(time)+"年");
         time = time/100;
@@ -759,7 +760,6 @@ var MainGameLayer = cc.Layer.extend({
 
                 var slot = this.current_slot;
                 this.model.evaluateColonies(slot);
-                this.model.evaluateShips(slot);
                 this.current_slot++;
                 if (this.current_slot >= TIME_SLICE_COUNT) this.current_slot = 0;
 

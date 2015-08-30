@@ -25,7 +25,7 @@ var dimens = {
     tech_detail_tech_description: 20,
     tech_detail_tech_discount: 18,
     tech_detail_tech_flavor: 18,
-    tech_detail_research: 18,
+    tech_detail_research: 17,
 
     colony_detail_name: 20,
     colony_label: 18,
@@ -90,7 +90,7 @@ var texts = {
     ],
     atmosphere_quality: [
         "无毒",
-        "有毒",
+        "微毒",
         "剧毒"
     ],
 

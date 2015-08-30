@@ -5,6 +5,7 @@ var TECH_TYPE_PHYSICAL = 0;
 var TECH_TYPE_BIOLOGICAL = 1;
 var TECH_TYPE_PSYCHOLOGY = 2;
 var TECH_TYPE_MECHANICAL = 3;
+var TECH_TYPE_ELECTRONIC = 4;
 
 var TechModel = Backbone.Model.extend({
     defaults:function(){
@@ -98,7 +99,7 @@ var Bionics = TechModel.extend({
             name: "bionics",
             tier: 0,
             cost: 4,
-            types: [TECH_TYPE_MECHANICAL, TECH_TYPE_BIOLOGICAL],
+            types: [TECH_TYPE_MECHANICAL, TECH_TYPE_BIOLOGICAL, TECH_TYPE_ELECTRONIC],
             flavor: "可以替换的义肢和器官使人们在灾难中的存活率更高"
         }
     },
@@ -248,6 +249,34 @@ var FusionDrive = TechModel.extend({
     }
 });
 
+var Gill = TechModel.extend({
+    negativeEffect: 0.1,
+    effect: 100000,
+    defaults:function(){
+        return {
+            displayName : "鳃裂",
+            name: "gill",
+            tier: 1,
+            cost: 40,
+            types: [TECH_TYPE_BIOLOGICAL],
+            flavor: ""
+        }
+    },
+    getDescription:function(){
+        return "海洋多承载"+bigNumberToHumanReadable_zh_cn(this.effect)+"人每亿km²，人性-"+Math.round(this.negativeEffect*100)+"%";
+    },
+    onGain:function(){
+        _.each(gameModel._stars,function(starSystemModel){
+            var planet = starSystemModel._bestPlanet;
+            if ( planet.get("seaCoverage") ) {
+                planet.set("seaUsage", planet.get("seaUsage") + this.effect);
+                planet.calSupportPopulation();
+            }
+        },this);
+        gameModel.set("humanity",gameModel.get("humanity") - this.negativeEffect);
+    }
+});
+
 var GroupMind = TechModel.extend({
     effect: 2,
     defaults:function(){
@@ -276,12 +305,12 @@ var IntelligentDolphin = TechModel.extend({
             name: "intelligent-dolphin",
             tier: 2,
             cost: 120,
-            types: [TECH_TYPE_PSYCHOLOGY, TECH_TYPE_BIOLOGICAL],
+            types: [TECH_TYPE_ELECTRONIC, TECH_TYPE_BIOLOGICAL],
             flavor: ""
         }
     },
     getDescription:function(){
-        return "海洋可以多承载"+bigNumberToHumanReadable_zh_cn(this.effect)+"人每亿km²";
+        return "海洋多承载"+bigNumberToHumanReadable_zh_cn(this.effect)+"人每亿km²";
     },
     onGain:function(){
         _.each(gameModel._stars,function(starSystemModel){
@@ -295,25 +324,22 @@ var IntelligentDolphin = TechModel.extend({
 });
 
 var IntelligentApe = TechModel.extend({
-    effect: 0.2,
+    effect: 0.3,
     defaults:function(){
         return {
             displayName : "智能猩猩",
             name: "intelligent-ape",
             tier: 3,
             cost: 600,
-            types: [TECH_TYPE_PSYCHOLOGY, TECH_TYPE_BIOLOGICAL],
+            types: [TECH_TYPE_ELECTRONIC, TECH_TYPE_BIOLOGICAL],
             flavor: ""
         }
     },
     getDescription:function(){
-        return "科技增长加"+Math.round(this.effect*100)/100+"% 飞船发射率加"+Math.round(this.effect*100)/100+"%";
+        return "科技增长加"+Math.round(this.effect*100)+"%";
     },
     onGain:function(){
         gameModel.registerEffectingTech("scienceAdjust", this, function(rate){
-            return rate+this.effect;
-        });
-        gameModel.registerEffectingTech("launchRate", this, function(rate){
             return rate+this.effect;
         });
     }
@@ -379,6 +405,32 @@ var MemoryStorage = TechModel.extend({
     }
 });
 
+var Nanobot = TechModel.extend({
+    effect: 50000,
+    defaults:function(){
+        return {
+            displayName : "纳米机器人",
+            name: "nanobot",
+            tier: 0,
+            cost: 10,
+            types: [TECH_TYPE_MECHANICAL, TECH_TYPE_ELECTRONIC],
+            flavor: ""
+        }
+    },
+    getDescription:function(){
+        return "陆地多承载"+bigNumberToHumanReadable_zh_cn(this.effect)+"人每亿km²";
+    },
+    onGain:function(){
+        _.each(gameModel._stars,function(starSystemModel){
+            var planet = starSystemModel._bestPlanet;
+            if ( planet.get("landCoverage") ) {
+                planet.set("landUsage", planet.get("landUsage") + this.effect);
+                planet.calSupportPopulation();
+            }
+        },this);
+    }
+});
+
 var Psychohistory = TechModel.extend({
     defaults:function(){
         return {
@@ -411,7 +463,61 @@ var QuantumCommunication = TechModel.extend({
     }
 });
 
-//常温超导
+var ResistanceCold = TechModel.extend({
+    negativeEffect: 0.05,
+    effect: 0.5,
+    defaults:function(){
+        return {
+            displayName : "抗寒基因",
+            name: "resistance-cold",
+            tier: 2,
+            cost: 120,
+            types: [TECH_TYPE_BIOLOGICAL],
+            flavor: ""
+        }
+    },
+    getDescription:function(){
+        return "严寒星球的承载人口惩罚减少"+Math.round(this.effect*100)+"%，人性-"+Math.round(this.negativeEffect*100)+"%";
+    },
+    onGain:function(){
+        _.each(gameModel._stars,function(starSystemModel){
+            var planet = starSystemModel._bestPlanet;
+            if ( planet.get("temperature") == TEMPERATURE_LOW ) {
+                planet.set("penalty", planet.get("penalty") - this.effect);
+                planet.calSupportPopulation();
+            }
+        },this);
+        gameModel.set("humanity",gameModel.get("humanity") - this.negativeEffect);
+    }
+});
+
+var ResistanceHeat = TechModel.extend({
+    negativeEffect: 0.05,
+    effect: 0.5,
+    defaults:function(){
+        return {
+            displayName : "抗热基因",
+            name: "resistance-heat",
+            tier: 2,
+            cost: 120,
+            types: [TECH_TYPE_BIOLOGICAL],
+            flavor: ""
+        }
+    },
+    getDescription:function(){
+        return "酷热星球的承载人口惩罚减少"+Math.round(this.effect*100)+"%，人性-"+Math.round(this.negativeEffect*100)+"%";
+    },
+    onGain:function(){
+        _.each(gameModel._stars,function(starSystemModel){
+            var planet = starSystemModel._bestPlanet;
+            if ( planet.get("temperature") == TEMPERATURE_HIGH ) {
+                planet.set("penalty", planet.get("penalty") - this.effect);
+                planet.calSupportPopulation();
+            }
+        },this);
+        gameModel.set("humanity",gameModel.get("humanity") - this.negativeEffect);
+    }
+});
 
 var SpiritOfAdventure = TechModel.extend({
     effect: 0.2,
@@ -472,6 +578,27 @@ var SpaceElevator = TechModel.extend({
         gameModel.set("shipCapacity",gameModel.get("shipCapacity")+this.effect);
     }
 });
+var Telekinesis = TechModel.extend({
+    effect:0.3,
+    defaults:function(){
+        return {
+            displayName : "意念移物",
+            name: "telekinesis",
+            tier: 3,
+            cost: 500,
+            types: [TECH_TYPE_PSYCHOLOGY],
+            flavor: "May the force be with you."
+        }
+    },
+    getDescription:function(){
+        return "飞船发射率加"+Math.round(this.effect*100)+"%";
+    },
+    onGain:function(){
+        gameModel.registerEffectingTech("launchRate", this, function(rate){
+            return rate+this.effect;
+        });
+    }
+});
 
 var TimeMachine = TechModel.extend({
     effect:20000,
@@ -505,7 +632,7 @@ var VirtualReality = TechModel.extend({
             name: "virtual-reality",
             tier: 0,
             cost: 5,
-            types: [TECH_TYPE_MECHANICAL, TECH_TYPE_PSYCHOLOGY],
+            types: [TECH_TYPE_PSYCHOLOGY, TECH_TYPE_ELECTRONIC],
             flavor: "代号Matrix的全感官虚拟现实工具最初只是用于提供商业化的游戏体验，但后来被发现可以用于释放人的贪婪欲望，战争狂都在虚拟世界中得到了满足。副作用是，人的进取心也消失了。"
         }
     },
@@ -543,6 +670,33 @@ var WarpEngine = TechModel.extend({
     }
 });
 
+var Wing = TechModel.extend({
+    negativeEffect: 0.2,
+    effect: 100000,
+    defaults:function(){
+        return {
+            displayName : "翼膜",
+            name: "wing",
+            tier: 3,
+            cost: 400,
+            types: [TECH_TYPE_BIOLOGICAL],
+            flavor: ""
+        }
+    },
+    getDescription:function(){
+        return "气态行星多承载"+bigNumberToHumanReadable_zh_cn(this.effect)+"人每亿km²，人性-"+Math.round(this.negativeEffect*100)+"%";
+    },
+    onGain:function(){
+        _.each(gameModel._stars,function(starSystemModel){
+            var planet = starSystemModel._bestPlanet;
+            if ( planet.get("airCoverage") ) {
+                planet.set("airUsage", planet.get("airUsage") + this.effect);
+                planet.calSupportPopulation();
+            }
+        },this);
+        gameModel.set("humanity",gameModel.get("humanity") - this.negativeEffect);
+    }
+});
 
 var CLASS_MAP = {
     "anti-gravity":AntiGravity,
@@ -555,17 +709,23 @@ var CLASS_MAP = {
     exoskeleton: Exoskeleton,
     "fusion-drive":FusionDrive,
     "group-mind":GroupMind,
+    gill: Gill,
     "intelligent-ape":IntelligentApe,
     "intelligent-dolphin":IntelligentDolphin,
     "meaning-of-life":MeaningOfLife,
     "memory-storage":MemoryStorage,
     "multiverse-communication":MultiverseCommunication,
+    nanobot: Nanobot,
     psychohistory: Psychohistory,
     "quantum-communication":QuantumCommunication,
+    "resistance-cold":ResistanceCold,
+    "resistance-heat":ResistanceHeat,
     "space-elevator":SpaceElevator,
     "spirit-of-adventure":SpiritOfAdventure,
     "spirit-of-science":SpiritOfScience,
+    telekinesis:Telekinesis,
     "time-machine":TimeMachine,
     "virtual-reality": VirtualReality,
-    "warp-engine":WarpEngine
+    "warp-engine":WarpEngine,
+    wing: Wing
 };

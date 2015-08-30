@@ -529,7 +529,9 @@ var MainGameLayer = cc.Layer.extend({
         if ( disaster.effectLength ) {
             effectLast = "，文明倒退了" + Math.round(disaster.effectLength*100) + "年";
         }
-        this.uiLayer.showLog(disaster.colony.get("name")+texts.colonyDisaster[disaster.type]+"，"+bigNumberToHumanReadable_zh_cn(disaster.populationLose)+"人丧生"+effectLast);
+        var disasterStr = texts.colonyDisaster[disaster.type];
+        if ( disasterStr instanceof Array ) disasterStr = _.sample(disasterStr);
+        this.uiLayer.showLog(disaster.colony.get("name")+disasterStr+"，"+bigNumberToHumanReadable_zh_cn(disaster.populationLose)+"人丧生"+effectLast);
     },
     _renderColonies:function(){
 

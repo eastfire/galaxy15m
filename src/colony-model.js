@@ -88,6 +88,8 @@ var ColonyModel = Backbone.Model.extend({
     initialize:function(){
         this._launchAccumulate = 0;
         this._warAccumulate = 0;
+        this._virusAccumulate = 0;
+        this._aiAccumulate = 0;
     },
     evaluate:function(){
         this._evaluateMaxPopulation();
@@ -174,7 +176,7 @@ var ColonyModel = Backbone.Model.extend({
     },
     _evaluatePopulationGrowRate:function(){
         var currentPopulation = this.get("population");
-        var maxPopulation = this.planet.get("maxPopulation");
+        var maxPopulation = this.get("maxPopulation");
         var rate = 0;
         if ( this.get("currentDisasterType") ) {
             rate = 0;
@@ -208,6 +210,8 @@ var ColonyModel = Backbone.Model.extend({
     _evaluateDisaster:function(){
         if ( !this.shortenDisaster() ) {
             this._evaluateWarDisaster();
+            this._evaluateVirusDisaster();
+            this._evaluateAIDisaster();
         }
     },
     _evaluateWarDisaster:function(){
@@ -222,9 +226,9 @@ var ColonyModel = Backbone.Model.extend({
         this._warAccumulate += rate;
         if ( this._warAccumulate >= 1 ) {
             this._warAccumulate = 0;
-            var value = this.get("population") * (Math.random()*0.5);
+            var value = this.get("population") * ((Math.random()*0.5+0.1));
             this.losePopulation(value);
-            var countDown = Math.round(Math.random()*10)+20;
+            var countDown = Math.round(Math.random()*10)+30;
             countDown = adjust = gameModel.techEffect("disasterLength", countDown);
             this.set({
                 currentDisasterType: "war",
@@ -232,6 +236,54 @@ var ColonyModel = Backbone.Model.extend({
                 });
             gameModel.trigger("disaster", {
                 type: "war",
+                colony: this,
+                populationLose : value,
+                effectLength: countDown
+            });
+        }
+    },
+    _evaluateVirusDisaster:function(){
+        var rate = 0;
+        var count = gameModel.techCountByType(TECH_TYPE_BIOLOGICAL);
+        rate = gameModel.techEffect("virusRate", count/100);
+        this._virusAccumulate += rate;
+        if ( this._virusAccumulate >= 1 ) {
+            this._virusAccumulate = 0;
+            var value = this.get("population") * ((Math.random()*0.5+0.1));
+            this.losePopulation(value);
+            var countDown = Math.round(Math.random()*10)+30;
+            countDown = adjust = gameModel.techEffect("disasterLength", countDown);
+            this.set({
+                currentDisasterType: "virus",
+                disasterCountDown : countDown
+            });
+
+            gameModel.trigger("disaster", {
+                type: "virus",
+                colony: this,
+                populationLose : value,
+                effectLength: countDown
+            });
+        }
+    },
+    _evaluateAIDisaster:function(){
+        var rate = 0;
+        var count = gameModel.techCountByType(TECH_TYPE_ELECTRONIC);
+        rate = gameModel.techEffect("AIRate", count/100);
+        this._aiAccumulate += rate;
+        if ( this._aiAccumulate >= 1 ) {
+            this._aiAccumulate = 0;
+            var value = this.get("population") * ((Math.random()*0.5+0.1));
+            this.losePopulation(value);
+            var countDown = Math.round(Math.random()*10)+30;
+            countDown = adjust = gameModel.techEffect("disasterLength", countDown);
+            this.set({
+                currentDisasterType: "ai",
+                disasterCountDown : countDown
+            });
+
+            gameModel.trigger("disaster", {
+                type: "ai",
                 colony: this,
                 populationLose : value,
                 effectLength: countDown
@@ -278,6 +330,7 @@ var ColonyModel = Backbone.Model.extend({
 
             production *= rate;
 
+            production = Math.min(production, 0.5);
             //TODO gravity adjust
         }
         this.set("launchRate", production);
@@ -292,12 +345,16 @@ var ColonyModel = Backbone.Model.extend({
         if ( adjust != 0 ) {
             var science = this.get("population") / 1000000 ;
             science *= adjust;
+
+            science = Math.min(science, 5);
+
             this.set("scienceGenerate",science);
             if ( mainLayer._scienceIconNumber < MAX_SCIENCE_ICON && Math.random() < science / 10 ) {
                 if ( science > 1 ) science -= 1;
                 else science = 0;
                 this.trigger("showScienceIcon",this);
             }
+
             window.gameModel.getScience(science);
         } else {
             this.set("scienceGenerate",0);

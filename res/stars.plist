@@ -69,36 +69,10 @@
                 <key>sourceSize</key>
                 <string>{48,48}</string>
             </dict>
-            <key>star-gaint.png</key>
+            <key>star-dwarf1.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{444,2},{48,48}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <false/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{48,48}}</string>
-                <key>sourceSize</key>
-                <string>{48,48}</string>
-            </dict>
-            <key>star-gaint2.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{494,2},{48,48}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <false/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{48,48}}</string>
-                <key>sourceSize</key>
-                <string>{48,48}</string>
-            </dict>
-            <key>star-sun.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{544,2},{32,32}}</string>
+                <string>{{444,2},{32,32}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -108,10 +82,75 @@
                 <key>sourceSize</key>
                 <string>{32,32}</string>
             </dict>
-            <key>star1.png</key>
+            <key>star-dwarf2.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{578,2},{32,32}}</string>
+                <string>{{478,2},{32,32}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{32,32}}</string>
+                <key>sourceSize</key>
+                <string>{32,32}</string>
+            </dict>
+            <key>star-giant1.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{512,2},{32,32}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{32,32}}</string>
+                <key>sourceSize</key>
+                <string>{32,32}</string>
+            </dict>
+            <key>star-giant2.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{546,2},{32,32}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{32,32}}</string>
+                <key>sourceSize</key>
+                <string>{32,32}</string>
+            </dict>
+            <key>star-giant3.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{580,2},{32,32}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{32,32}}</string>
+                <key>sourceSize</key>
+                <string>{32,32}</string>
+            </dict>
+            <key>star-giant4.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{614,2},{32,32}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{32,32}}</string>
+                <key>sourceSize</key>
+                <string>{32,32}</string>
+            </dict>
+            <key>star-sun.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{648,2},{32,32}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -124,7 +163,7 @@
             <key>tech-anti-gravity.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{612,2},{96,96}}</string>
+                <string>{{682,2},{96,96}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -137,7 +176,7 @@
             <key>tech-anti-matter.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{710,2},{96,96}}</string>
+                <string>{{780,2},{96,96}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -150,7 +189,7 @@
             <key>tech-bionics.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{808,2},{96,96}}</string>
+                <string>{{878,2},{96,96}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -163,7 +202,7 @@
             <key>tech-clone-human.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{906,2},{96,96}}</string>
+                <string>{{976,2},{96,96}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -176,7 +215,7 @@
             <key>tech-cure-cancer.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{1004,2},{96,96}}</string>
+                <string>{{1074,2},{96,96}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -189,7 +228,7 @@
             <key>tech-cure-old.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{1004,2},{96,96}}</string>
+                <string>{{1074,2},{96,96}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -202,7 +241,7 @@
             <key>tech-cyber-brain.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{1102,2},{96,96}}</string>
+                <string>{{1172,2},{96,96}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -215,7 +254,7 @@
             <key>tech-dyson-sphere.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{1200,2},{96,96}}</string>
+                <string>{{1270,2},{96,96}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -228,7 +267,7 @@
             <key>tech-exoskeleton.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{1298,2},{96,96}}</string>
+                <string>{{1368,2},{96,96}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -241,7 +280,7 @@
             <key>tech-fusion-drive.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{1396,2},{96,96}}</string>
+                <string>{{1466,2},{96,96}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -254,7 +293,7 @@
             <key>tech-gill.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{1494,2},{96,96}}</string>
+                <string>{{1564,2},{96,96}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -267,7 +306,7 @@
             <key>tech-group-mind.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{1592,2},{96,96}}</string>
+                <string>{{1662,2},{96,96}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -521,7 +560,7 @@
             <key>size</key>
             <string>{1766,198}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:2d87a822fb36910632351110775cb1a9:9ccc4e4179d9ae789447a2b116dd3a74:a283aa680c40f7aba299fc6537de2290$</string>
+            <string>$TexturePacker:SmartUpdate:cbd71a229e5c2e0e440822b093791be7:15596935191886aa17067609c1bf72d9:a283aa680c40f7aba299fc6537de2290$</string>
             <key>textureFileName</key>
             <string>stars.png</string>
         </dict>

@@ -483,7 +483,7 @@ var ResistanceCold = TechModel.extend({
         _.each(gameModel._stars,function(starSystemModel){
             var planet = starSystemModel._bestPlanet;
             if ( planet.get("temperature") == TEMPERATURE_LOW ) {
-                planet.set("penalty", planet.get("penalty") - this.effect);
+                planet.set("penalty", Math.max(0,planet.get("penalty") - this.effect));
                 planet.calSupportPopulation();
             }
         },this);
@@ -511,7 +511,7 @@ var ResistanceHeat = TechModel.extend({
         _.each(gameModel._stars,function(starSystemModel){
             var planet = starSystemModel._bestPlanet;
             if ( planet.get("temperature") == TEMPERATURE_HIGH ) {
-                planet.set("penalty", planet.get("penalty") - this.effect);
+                planet.set("penalty", Math.max(0,planet.get("penalty") - this.effect));
                 planet.calSupportPopulation();
             }
         },this);
@@ -672,7 +672,7 @@ var WarpEngine = TechModel.extend({
 
 var Wing = TechModel.extend({
     negativeEffect: 0.2,
-    effect: 100000,
+    effect: 10000,
     defaults:function(){
         return {
             displayName : "翼膜",

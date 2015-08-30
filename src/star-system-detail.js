@@ -113,8 +113,10 @@ var StarSystemDetailSprite = cc.Scale9Sprite.extend({
         y -= lineHeight;
 
         if ( this.model.get("type") === CORE_SOLID ) {
+            var penalty = this.model.get("penalty");
+            var discount = 1 - Math.min(1, penalty);
             var superficialAreaLabel = new cc.LabelTTF("陆地"+Math.round(this.model.get("landCoverage")*100)+"% 可承载"+
-                bigNumberToHumanReadable_zh_cn(this.model.get("landSuperficialArea")*this.model.get("landUsage"))+"人", null, dimens.colony_label);
+                bigNumberToHumanReadable_zh_cn(this.model.get("landSuperficialArea")*this.model.get("landUsage")*discount)+"人", null, dimens.colony_label);
             superficialAreaLabel.attr({
                 color: colors.log_label,
                 x: 30,
@@ -130,7 +132,7 @@ var StarSystemDetailSprite = cc.Scale9Sprite.extend({
                 seaStr = "没有海洋";
             } else {
                 seaStr = "海洋"+Math.round(this.model.get("seaCoverage")*100)+"% 可承载"+
-                    bigNumberToHumanReadable_zh_cn(this.model.get("seaSuperficialArea")*this.model.get("seaUsage"))+"人";
+                    bigNumberToHumanReadable_zh_cn(this.model.get("seaSuperficialArea")*this.model.get("seaUsage")*discount)+"人";
             }
             var seaSuperficialAreaLabel = new cc.LabelTTF(seaStr, null, dimens.colony_label);
             seaSuperficialAreaLabel.attr({

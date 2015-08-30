@@ -49,6 +49,7 @@ var GameModel = Backbone.Model.extend({
         this._colonies = [];
         this._ships = [];
         this._stars = [];
+        this._techCountByType = [];
 
         this._effectTechEntry = {};
 
@@ -101,7 +102,18 @@ var GameModel = Backbone.Model.extend({
             }
             this._tech[level].push(techModel);
         }
+        this.addTechCountByType(techModel);
         techModel.onGain();
+    },
+    addTechCountByType:function(techModel){
+        _.each( techModel.get("types"),function(type){
+            if ( this._techCountByType[type] ) {
+                this._techCountByType[type] ++;
+            } else this._techCountByType[type] = 1;
+        },this);
+    },
+    techCountByType:function(type){
+        return this._techCountByType[type];
     },
     initAll:function(){
         this._shipCount = 0;
@@ -113,6 +125,7 @@ var GameModel = Backbone.Model.extend({
         this._extraTech = [];
         _.each(this.get("savedTech"),function(name){
             var techModel = new CLASS_MAP[name]();
+            this.addTechCountByType(techModel);
             techModel.onGain();
             techModel._isFromMultiverse = true;
             this._extraTech.push( techModel );

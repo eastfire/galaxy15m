@@ -56,7 +56,7 @@ var AntiGravity = TechModel.extend({
             displayName : "反重力",
             name: "anti-gravity",
             tier: 1,
-            cost: 25,
+            cost: 50,
             types: [TECH_TYPE_PHYSICAL],
             flavor: "反重力的应用使得直接将一个城市打包送上太空成为可能"
         }
@@ -76,7 +76,7 @@ var AntiMatter = TechModel.extend({
             displayName : "反物质引擎",
             name: "anti-matter",
             tier: 2,
-            cost: 150,
+            cost: 300,
             types: [TECH_TYPE_PHYSICAL],
             flavor: null
         }
@@ -98,7 +98,7 @@ var Bionics = TechModel.extend({
             displayName : "生化义体",
             name: "bionics",
             tier: 0,
-            cost: 4,
+            cost: 8,
             types: [TECH_TYPE_MECHANICAL, TECH_TYPE_BIOLOGICAL, TECH_TYPE_ELECTRONIC],
             flavor: "可以替换的义肢和器官使人们在灾难中的存活率更高"
         }
@@ -121,7 +121,7 @@ var CloneHuman = TechModel.extend({
             displayName : "克隆人",
             name: "clone-human",
             tier: 1,
-            cost: 20,
+            cost: 40,
             types: [TECH_TYPE_BIOLOGICAL],
             flavor: "与其说是技术的突破，不如说是伦理的突破"
         }
@@ -144,7 +144,7 @@ var CureCancer = TechModel.extend({
             displayName : "治愈癌症",
             name: "cure-cancer",
             tier: 1,
-            cost: 30,
+            cost: 60,
             types: [TECH_TYPE_BIOLOGICAL],
             flavor: null
         }
@@ -167,7 +167,7 @@ var CureOld = TechModel.extend({
             displayName : "消除衰老",
             name: "cure-old",
             tier: 2,
-            cost: 150,
+            cost: 300,
             types: [TECH_TYPE_BIOLOGICAL],
             flavor: "没有人会因为衰老而死亡了,然而不会死亡的人类还算是人类吗?"
         }
@@ -190,7 +190,7 @@ var DysonSphere = TechModel.extend({
             displayName : "戴森球",
             name: "dyson-sphere",
             tier: 4,
-            cost: 3600,
+            cost: 7200,
             types: [TECH_TYPE_PHYSICAL, TECH_TYPE_MECHANICAL],
             flavor: "围绕恒星建造的戴森球直接吸取恒星的能源（注：为了平衡性，本科技的效果已大幅削弱）"
         }
@@ -212,7 +212,7 @@ var Exoskeleton = TechModel.extend({
             displayName : "外骨骼",
             name: "exoskeleton",
             tier: 0,
-            cost: 5,
+            cost: 10,
             types: [TECH_TYPE_MECHANICAL],
             flavor: null
         }
@@ -234,7 +234,7 @@ var FusionDrive = TechModel.extend({
             displayName : "聚变引擎",
             name: "fusion-drive",
             tier: 1,
-            cost: 25,
+            cost: 50,
             types: [TECH_TYPE_PHYSICAL, TECH_TYPE_MECHANICAL],
             flavor: "可控核聚变改变了以往裂变驱动往飞船后扔核弹的简陋模式"
         }
@@ -257,7 +257,7 @@ var Gill = TechModel.extend({
             displayName : "鳃裂",
             name: "gill",
             tier: 1,
-            cost: 40,
+            cost: 80,
             types: [TECH_TYPE_BIOLOGICAL],
             flavor: ""
         }
@@ -284,7 +284,7 @@ var GroupMind = TechModel.extend({
             displayName : "集体心智",
             name: "group-mind",
             tier: 4,
-            cost: 3000,
+            cost: 6000,
             types: [TECH_TYPE_PHYSICAL, TECH_TYPE_PSYCHOLOGY],
             flavor: "一次意外的物理实现，打通了人类大脑之间的量子通道。从此以后，个人在保留自己的意识的同时，也能体会到其他所有人的喜怒哀乐和生老病死。个体不会逝去,而是留存在整体的回忆中。"
         }
@@ -304,7 +304,7 @@ var IntelligentDolphin = TechModel.extend({
             displayName : "智能海豚",
             name: "intelligent-dolphin",
             tier: 2,
-            cost: 120,
+            cost: 250,
             types: [TECH_TYPE_ELECTRONIC, TECH_TYPE_BIOLOGICAL],
             flavor: ""
         }
@@ -330,7 +330,7 @@ var IntelligentApe = TechModel.extend({
             displayName : "智能猩猩",
             name: "intelligent-ape",
             tier: 3,
-            cost: 600,
+            cost: 1200,
             types: [TECH_TYPE_ELECTRONIC, TECH_TYPE_BIOLOGICAL],
             flavor: ""
         }
@@ -352,7 +352,7 @@ var MeaningOfLife = TechModel.extend({
             displayName : "生命的意义",
             name: "meaning-of-life",
             tier: 4,
-            cost: 2400,
+            cost: 4200,
             types: [TECH_TYPE_PSYCHOLOGY],
             flavor: "42"
         }
@@ -371,7 +371,7 @@ var MultiverseCommunication = TechModel.extend({
             displayName : "平行宇宙通讯",
             name: "multiverse-communication",
             tier: 2,
-            cost: 50,
+            cost: 100,
             types: [TECH_TYPE_PHYSICAL],
             flavor: ""
         }
@@ -390,7 +390,7 @@ var MemoryStorage = TechModel.extend({
             displayName : "记忆存储",
             name: "memory-storage",
             tier: 0,
-            cost: 8,
+            cost: 16,
             types: [TECH_TYPE_PSYCHOLOGY, TECH_TYPE_BIOLOGICAL],
             flavor: "记忆可以存储在有机质容器中。恢复记忆时需要吃一些类似面包的东西。"
         }
@@ -405,6 +405,35 @@ var MemoryStorage = TechModel.extend({
     }
 });
 
+var MindControl = TechModel.extend({
+    negativeEffect: 0.3,
+    defaults:function(){
+        return {
+            displayName : "心灵控制",
+            name: "mind-control",
+            tier: 3,
+            cost: 600,
+            types: [TECH_TYPE_PSYCHOLOGY, TECH_TYPE_ELECTRONIC],
+            flavor: "Big brother is watching you."
+        }
+    },
+    getDescription:function(){
+        return "避免灾难影响。人性减"+Math.round(this.negativeEffect*100)+"%";
+    },
+    onGain:function(){
+        gameModel.registerEffectingTech("warRate", this, function(rate){
+            return 0;
+        });
+        gameModel.registerEffectingTech("virusRate", this, function(rate){
+            return 0;
+        });
+        gameModel.registerEffectingTech("aiRate", this, function(rate){
+            return 0;
+        });
+        gameModel.set("humanity",gameModel.get("humanity") - this.negativeEffect);
+    }
+});
+
 var Nanobot = TechModel.extend({
     effect: 50000,
     defaults:function(){
@@ -412,7 +441,7 @@ var Nanobot = TechModel.extend({
             displayName : "纳米机器人",
             name: "nanobot",
             tier: 0,
-            cost: 10,
+            cost: 20,
             types: [TECH_TYPE_MECHANICAL, TECH_TYPE_ELECTRONIC],
             flavor: ""
         }
@@ -437,7 +466,7 @@ var Psychohistory = TechModel.extend({
             displayName : "心理史学",
             name: "psychohistory",
             tier: 1,
-            cost: 15,
+            cost: 30,
             types: [TECH_TYPE_PSYCHOLOGY],
             flavor: "伟大的谢顿教授通过心理史学预知了文明灾难的发生。他建立了基地和第二基地，使人类世界能更快地度过文明的黑暗时期，重返辉煌。"
         }
@@ -471,7 +500,7 @@ var ResistanceCold = TechModel.extend({
             displayName : "抗寒基因",
             name: "resistance-cold",
             tier: 2,
-            cost: 120,
+            cost: 250,
             types: [TECH_TYPE_BIOLOGICAL],
             flavor: ""
         }
@@ -499,7 +528,7 @@ var ResistanceHeat = TechModel.extend({
             displayName : "抗热基因",
             name: "resistance-heat",
             tier: 2,
-            cost: 120,
+            cost: 250,
             types: [TECH_TYPE_BIOLOGICAL],
             flavor: ""
         }
@@ -526,7 +555,7 @@ var SpiritOfAdventure = TechModel.extend({
             displayName : "探险精神",
             name: "spirit-of-adventure",
             tier: 1,
-            cost: 25,
+            cost: 50,
             types: [TECH_TYPE_PSYCHOLOGY],
             flavor: ""
         }
@@ -547,7 +576,7 @@ var SpiritOfScience = TechModel.extend({
             displayName : "科研精神",
             name: "spirit-of-science",
             tier: 0,
-            cost: 6,
+            cost: 12,
             types: [TECH_TYPE_PSYCHOLOGY],
             flavor: ""
         }
@@ -566,7 +595,7 @@ var SpaceElevator = TechModel.extend({
             displayName : "太空电梯",
             name: "space-elevator",
             tier: 0,
-            cost: 3,
+            cost: 5,
             types: [TECH_TYPE_MECHANICAL],
             flavor: "太空电梯减少了往返地面与太空的成本，这使得在同步卫星轨道上建造大型太空船成为可能。同时也引发了大众化太空旅游的兴起。"
         }
@@ -585,7 +614,7 @@ var Telekinesis = TechModel.extend({
             displayName : "意念移物",
             name: "telekinesis",
             tier: 3,
-            cost: 500,
+            cost: 1000,
             types: [TECH_TYPE_PSYCHOLOGY],
             flavor: "May the force be with you."
         }
@@ -607,7 +636,7 @@ var TimeMachine = TechModel.extend({
             displayName : "时间机器",
             name: "time-machine",
             tier: 4,
-            cost: 3200,
+            cost: 6400,
             types: [TECH_TYPE_MECHANICAL,TECH_TYPE_PHYSICAL],
             flavor: ""
         }
@@ -631,7 +660,7 @@ var VirtualReality = TechModel.extend({
             displayName : "全感官虚拟现实",
             name: "virtual-reality",
             tier: 0,
-            cost: 5,
+            cost: 10,
             types: [TECH_TYPE_PSYCHOLOGY, TECH_TYPE_ELECTRONIC],
             flavor: "代号Matrix的全感官虚拟现实工具最初只是用于提供商业化的游戏体验，但后来被发现可以用于释放人的贪婪欲望，战争狂都在虚拟世界中得到了满足。副作用是，人的进取心也消失了。"
         }
@@ -655,7 +684,7 @@ var WarpEngine = TechModel.extend({
             displayName : "曲率引擎",
             name: "warp-engine",
             tier: 3,
-            cost: 500,
+            cost: 1000,
             types: [TECH_TYPE_PHYSICAL],
             flavor: "科学家们做了世世代代的梦终于实现了。虽然引擎的理论功率能使飞船达到几倍甚至几十倍光速，但是为了乘客不会犯晕时症，并不会启用过高的速度"
         }
@@ -678,7 +707,7 @@ var Wing = TechModel.extend({
             displayName : "翼膜",
             name: "wing",
             tier: 3,
-            cost: 400,
+            cost: 800,
             types: [TECH_TYPE_BIOLOGICAL],
             flavor: ""
         }
@@ -714,6 +743,7 @@ var CLASS_MAP = {
     "intelligent-dolphin":IntelligentDolphin,
     "meaning-of-life":MeaningOfLife,
     "memory-storage":MemoryStorage,
+    "mind-control":MindControl,
     "multiverse-communication":MultiverseCommunication,
     nanobot: Nanobot,
     psychohistory: Psychohistory,

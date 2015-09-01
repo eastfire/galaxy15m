@@ -43,7 +43,8 @@ var UILayer = cc.Layer.extend({
             x: cc.winSize.width - 75,
             y: 25,
             anchorX: 0.5,
-            anchorY: 0.5
+            anchorY: 0.5,
+            opacity: 200
         });
         this.zoomOutItem = new cc.MenuItemImage(
             cc.spriteFrameCache.getSpriteFrame("zoom-out-default.png"),
@@ -56,7 +57,8 @@ var UILayer = cc.Layer.extend({
             x: cc.winSize.width - 25,
             y: 25,
             anchorX: 0.5,
-            anchorY: 0.5
+            anchorY: 0.5,
+            opacity: 200
         });
         var scienceItem = new cc.MenuItemImage(
             cc.spriteFrameCache.getSpriteFrame("icon-science.png"),
@@ -166,9 +168,40 @@ var UILayer = cc.Layer.extend({
             y: 32,
             anchorY: 1,
             width: 540,
-            height: 450
+            height: 450,
+            opacity: 200
         });
         this.addChild(this.logBg,UI_Z_INDEX);
+
+        var self = this;
+        var logClickListener = cc.EventListener.create({
+            event: cc.EventListener.TOUCH_ONE_BY_ONE,
+            swallowTouches: true,
+            onTouchBegan: function (touch, event) {
+                var target = event.getCurrentTarget();
+
+                var locationInNode = target.convertToNodeSpace(touch.getLocation());
+                var s = target.getContentSize();
+                var rect = cc.rect(0, 0, s.width, s.height);
+
+                //Check the click area
+                if (cc.rectContainsPoint(rect, locationInNode)) {
+                    target.opacity = 255;
+                    return true;
+                }
+                return false;
+            },
+            //Trigger when moving touch
+            onTouchMoved: function (touch, event) {
+            },
+            //Process the touch end event
+            onTouchEnded: function (touch, event) {
+                var target = event.getCurrentTarget();
+                target.opacity = 200;
+                cc.director.pushScene(new LogScene({model : self.model}))
+            }
+        });
+        cc.eventManager.addListener(logClickListener, this.logBg);
     },
     renderScore:function(){
         this.scoreLabel.setString(Math.round(this.model.get("score")));
@@ -206,6 +239,7 @@ var UILayer = cc.Layer.extend({
         if ( this.logLabel != null ) {
             this.logLabel.removeFromParent(true);
         }
+        this.model.addLog(text);
         this.logLabel = new cc.LabelTTF(text, null, dimens.log_label_text_size);
         this.logLabel.attr({
             color: colors.log_label,

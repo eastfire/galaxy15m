@@ -38,12 +38,17 @@ var dimens = {
     score_board_width: 750,
     score_board_height: 350,
     score_line_font_size: 20,
-    score_line_height: 35
+    score_line_height: 35,
+
+    log_board_width: 750,
+    log_board_height: 420,
+    log_line_font_size: 20,
+    log_line_height: 35
 }
 
 var colors = {
     top_bar_label: cc.color.BLACK,
-    log_label: cc.color.WHITE,
+    log_label: new cc.Color(0x06,0xf4,0xf4),
     dialog_label: cc.color.WHITE,
     gameover: cc.color.WHITE,
     science_value: cc.color.BLUE,

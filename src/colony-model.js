@@ -269,7 +269,7 @@ var ColonyModel = Backbone.Model.extend({
     _evaluateAIDisaster:function(){
         var rate = 0;
         var count = gameModel.techCountByType(TECH_TYPE_ELECTRONIC);
-        rate = gameModel.techEffect("AIRate", count/100);
+        rate = gameModel.techEffect("aiRate", count/100);
         this._aiAccumulate += rate;
         if ( this._aiAccumulate >= 1 ) {
             this._aiAccumulate = 0;

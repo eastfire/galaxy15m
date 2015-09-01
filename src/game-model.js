@@ -50,6 +50,7 @@ var GameModel = Backbone.Model.extend({
         this._ships = [];
         this._stars = [];
         this._techCountByType = [];
+        this._logs = [];
 
         this._effectTechEntry = {};
 
@@ -349,5 +350,11 @@ var GameModel = Backbone.Model.extend({
         return _.reduce(this._effectTechEntry[type],function(p, techModelEntry){
             return techModelEntry.func.call(techModelEntry.model, p);
         }, production);
+    },
+    addLog:function(text){
+        this._logs.push(Math.round(this.get("year"))+"G.A. "+text);
+    },
+    getLogs:function(){
+        return this._logs;
     }
 });

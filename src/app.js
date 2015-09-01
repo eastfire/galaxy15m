@@ -110,7 +110,7 @@ var UILayer = cc.Layer.extend({
 
         var populationIcon = new cc.Sprite(cc.spriteFrameCache.getSpriteFrame("icon-population.png"));
         populationIcon.attr({
-            x: 250,
+            x: 200,
             y: topBarY,
             scaleX: 0.6,
             scaleY: 0.6
@@ -119,7 +119,7 @@ var UILayer = cc.Layer.extend({
         this.populationLabel = new cc.LabelTTF("", null, dimens.top_bar_label);
         this.populationLabel.attr({
             color: colors.top_bar_label,
-            x: 270,
+            x: 220,
             y: topBarY-5,
             anchorX: 0,
             anchorY: 0.5
@@ -128,7 +128,7 @@ var UILayer = cc.Layer.extend({
 
         var humanityIcon = new cc.Sprite(cc.spriteFrameCache.getSpriteFrame("icon-humanity.png"));
         humanityIcon.attr({
-            x: 510,
+            x: 440,
             y: topBarY,
             scaleX: 0.6,
             scaleY: 0.6
@@ -137,7 +137,7 @@ var UILayer = cc.Layer.extend({
         this.humanityLabel = new cc.LabelTTF("", null, dimens.top_bar_label);
         this.humanityLabel.attr({
             color: colors.top_bar_label,
-            x: 530,
+            x: 460,
             y: topBarY-5,
             anchorX: 0,
             anchorY: 0.5

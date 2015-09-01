@@ -14,16 +14,17 @@ var GameOverLayer = cc.Layer.extend({
             anchorY: 0.5
         })
         this.addChild(label);
+        this.model = options.model;
 
         //check occupy
         var colonized = options.model.getColonizedStarSystems().length;
         var all = options.model.getAllStarSystems().length;
 
-        gameModel.set("colonizeRate", Math.floor(colonized/all*100) );
+        this.model.set("colonizeRate", Math.floor(colonized/all*100) );
         var year = Math.round(options.model.get("year")-START_YEAR);
         if ( year > MAX_YEAR ) year = MAX_YEAR;
         var str = "来自 "+options.model.get("homeName")+" 的 "+options.model.get("playerName")+" \n\n你在"+year+
-            "年时间里殖民了银河系"+( colonized >= all ? "所有" : (gameModel.get("colonizeRate")+"%") )+"的星系";
+            "年时间里殖民了银河系"+( colonized >= all ? "所有" : (this.model.get("colonizeRate")+"%") )+"的星系";
         label = new cc.LabelTTF(str, null, 25);
         label.attr({
             textAlign: cc.TEXT_ALIGNMENT_CENTER,
@@ -83,7 +84,7 @@ var GameOverLayer = cc.Layer.extend({
             }, this );
 
         continueItem.attr({
-            x: cc.winSize.width / 2.0,
+            x: cc.winSize.width / 2,
             y: 50,
             anchorX: 0.5,
             anchorY: 0.5
@@ -95,7 +96,29 @@ var GameOverLayer = cc.Layer.extend({
             y: continueItem.height/2
         });
         continueItem.addChild( continueText );
-        var continueMenu = new cc.Menu(continueItem);
+
+        var logItem = new cc.MenuItemImage(
+            cc.spriteFrameCache.getSpriteFrame("button-short-default.png"),
+            cc.spriteFrameCache.getSpriteFrame("button-short-press.png"),
+            function () {
+                cc.director.pushScene(new LogScene({model: this.model}))
+            }, this );
+
+        logItem.attr({
+            x: cc.winSize.width / 4,
+            y: 50,
+            anchorX: 0.5,
+            anchorY: 0.5
+        });
+        var logText = new cc.LabelTTF(texts.check_log, "宋体", dimens.game_over_continue);
+        logText.attr({
+            color: cc.color.WHITE,
+            x: logItem.width/2,
+            y: logItem.height/2
+        });
+        logItem.addChild( logText );
+
+        var continueMenu = new cc.Menu([continueItem,logItem]);
         continueMenu.x = 0;
         continueMenu.y = 0;
         this.addChild(continueMenu, 20);

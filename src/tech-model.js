@@ -183,6 +183,30 @@ var CureOld = TechModel.extend({
     }
 });
 
+var CyberBrain = TechModel.extend({
+    effect: 0.1,
+    negativeEffect: 0.1,
+    defaults:function(){
+        return {
+            displayName : "电子脑",
+            name: "cyber-brain",
+            tier: 2,
+            cost: 50,
+            types: [TECH_TYPE_ELECTRONIC, TECH_TYPE_BIOLOGICAL],
+            flavor: ""
+        }
+    },
+    getDescription:function(){
+        return "科技增长加"+Math.round(this.effect*100)+"%，人性-"+Math.round(this.negativeEffect*100)+"%";
+    },
+    onGain:function(){
+        gameModel.registerEffectingTech("scienceAdjust", this, function(rate){
+            return rate+this.effect;
+        });
+        gameModel.set("humanity",gameModel.get("humanity") - this.negativeEffect);
+    }
+});
+
 var DysonSphere = TechModel.extend({
     effect: 10,
     defaults:function(){
@@ -259,7 +283,7 @@ var Gill = TechModel.extend({
             tier: 1,
             cost: 80,
             types: [TECH_TYPE_BIOLOGICAL],
-            flavor: ""
+            flavor: "如果身处一片汪洋大海中，进化出鳃来似乎是顺理成章的"
         }
     },
     getDescription:function(){
@@ -332,7 +356,7 @@ var IntelligentApe = TechModel.extend({
             tier: 3,
             cost: 1200,
             types: [TECH_TYPE_ELECTRONIC, TECH_TYPE_BIOLOGICAL],
-            flavor: ""
+            flavor: "人类提升了自己的表兄弟……这样做真的好吗？"
         }
     },
     getDescription:function(){
@@ -734,6 +758,7 @@ var CLASS_MAP = {
     "clone-human":CloneHuman,
     "cure-cancer":CureCancer,
     "cure-old":CureOld,
+    "cyber-brain":CyberBrain,
     "dyson-sphere":DysonSphere,
     exoskeleton: Exoskeleton,
     "fusion-drive":FusionDrive,

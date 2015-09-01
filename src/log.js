@@ -85,6 +85,8 @@ var LogLayer = cc.Layer.extend({
             label.setString(log);
             i++;
         },this);
+
+        listView.scrollToBottom(0.3, true);
     }
 });
 

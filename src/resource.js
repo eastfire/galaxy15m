@@ -64,6 +64,8 @@ var texts = {
     confirm: "确定",
     continue: "继续",
     check_score_board: "查看排名",
+    check_log: "查看日志",
+
     restart: "再来一次大爆炸",
 
 

@@ -24,7 +24,8 @@ var OLD_CITY_NAME_POOL = [ "伦敦","纽约","巴黎","东京","香港","首尔"
     "热那亚","麦德林","圣克鲁斯-德特内里费","蒙彼利埃","科尔多瓦","武汉","格拉茨","耶路撒冷","新奥尔良","罗切斯特","尼斯",
     "釜山","温得和克","达曼","克赖斯特彻奇","累西腓","塔什干","哈密尔顿","雷克雅未克","那不勒斯","塔尔萨","路德维希港",
     "金斯敦","巴西利亚","新山","西安","福冈","谢菲尔德","伊兹密尔","诺丁汉","得梅因","坎皮纳斯","基希讷乌","海法",
-    "麦迪逊","埃里温","宿务市","纳闽","萨尔瓦多"];
+    "麦迪逊","埃里温","宿务市","纳闽","萨尔瓦多",
+    "特洛伊","巴格达","大马士革","斯巴达","亚特兰蒂斯","伊甸"];
 var NEW_COLONY_NAME_POOL = [ "海伯利安","鲸心","川陀","塔图因"]
 
 var colonyNameGenerated;
@@ -223,7 +224,7 @@ var ColonyModel = Backbone.Model.extend({
             rate = gameModel.get("maxPopulationIncreaseWarRate");
         }
         rate = gameModel.techEffect("warRate", rate);
-        this._warAccumulate += rate;
+        if ( rate > 0 ) this._warAccumulate += rate;
         if ( this._warAccumulate >= 1 ) {
             this._warAccumulate = 0;
             var value = this.get("population") * ((Math.random()*0.5+0.1));
@@ -246,7 +247,7 @@ var ColonyModel = Backbone.Model.extend({
         var rate = 0;
         var count = gameModel.techCountByType(TECH_TYPE_BIOLOGICAL);
         rate = gameModel.techEffect("virusRate", count/100);
-        this._virusAccumulate += rate;
+        if ( rate > 0 ) this._virusAccumulate += rate;
         if ( this._virusAccumulate >= 1 ) {
             this._virusAccumulate = 0;
             var value = this.get("population") * ((Math.random()*0.5+0.1));
@@ -270,7 +271,7 @@ var ColonyModel = Backbone.Model.extend({
         var rate = 0;
         var count = gameModel.techCountByType(TECH_TYPE_ELECTRONIC);
         rate = gameModel.techEffect("aiRate", count/100);
-        this._aiAccumulate += rate;
+        if ( rate > 0 ) this._aiAccumulate += rate;
         if ( this._aiAccumulate >= 1 ) {
             this._aiAccumulate = 0;
             var value = this.get("population") * ((Math.random()*0.5+0.1));

@@ -34,8 +34,7 @@ var ShipModel = Backbone.Model.extend({
             population: 1, //单位万
             type: "generation", //generation, sleep,
 
-            riotRate: 0,
-            riotResistance: 0
+            successRate: 0
         }
     },
     initialize:function(){

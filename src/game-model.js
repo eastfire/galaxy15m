@@ -23,7 +23,7 @@ var GameModel = Backbone.Model.extend({
             savedTech: [],
             initTech: [["quantum-communication"]],
             unlockedTech: [
-                ["exoskeleton","space-elevator","virtual-reality","memory-storage", "spirit-of-science","bionic","nanobot"],
+                ["exoskeleton","space-elevator","virtual-reality","memory-storage", "spirit-of-science","bionic","nanobot","great-firewall"],
                 ["anti-gravity","fusion-drive","clone-human","cure-cancer","psychohistory","spirit-of-adventure","gill","cyber-brain"],
                 ["anti-matter","cure-old","multiverse-communication","intelligent-dolphin","resistance-cold","resistance-heat"],
                 ["warp-engine","intelligent-ape","wing","telekinesis"],
@@ -46,6 +46,7 @@ var GameModel = Backbone.Model.extend({
     },
     initialize:function(){
         this._colonizedCount = 0;
+        this._currentColonySlot = 0;
         this._colonies = [];
         this._ships = [];
         this._stars = [];
@@ -185,7 +186,11 @@ var GameModel = Backbone.Model.extend({
         },this);
     },
     addColony:function(colony){
-        var slot = Math.floor(Math.random()*TIME_SLICE_COUNT);
+        var slot = this._currentColonySlot;
+        this._currentColonySlot++;
+        if ( this._currentColonySlot >= TIME_SLICE_COUNT )
+            this._currentColonySlot = 0;
+
         colony.timeSlot = slot;
         this._colonies[slot].push(colony);
 

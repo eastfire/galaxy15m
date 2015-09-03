@@ -301,6 +301,32 @@ var Gill = TechModel.extend({
     }
 });
 
+var GreatFirewall = TechModel.extend({
+    effect: 1,
+    negativeEffect: 0.1,
+    defaults:function(){
+        return {
+            displayName : "宇宙防火墙",
+            name: "great-firewall",
+            tier: 0,
+            cost: 1,
+            types: [TECH_TYPE_ELECTRONIC],
+            flavor: "根据相关法律，本词条的内容已被屏蔽。"
+        }
+    },
+    getDescription:function(){
+        return "人工智能起义的发生概率减少"+Math.round(this.effect*100)+"%，科技增长减少"+Math.round(this.negativeEffect*100)+"%";
+    },
+    onGain:function(){
+        gameModel.registerEffectingTech("scienceAdjust", this, function(rate){
+            return rate-this.negativeEffect;
+        });
+        gameModel.registerEffectingTech("aiRate", this, function(rate){
+            return rate*(1-this.effect);
+        });
+    }
+});
+
 var GroupMind = TechModel.extend({
     effect: 2,
     defaults:function(){
@@ -762,8 +788,9 @@ var CLASS_MAP = {
     "dyson-sphere":DysonSphere,
     exoskeleton: Exoskeleton,
     "fusion-drive":FusionDrive,
-    "group-mind":GroupMind,
     gill: Gill,
+    "group-mind":GroupMind,
+    "great-firewall": GreatFirewall,
     "intelligent-ape":IntelligentApe,
     "intelligent-dolphin":IntelligentDolphin,
     "meaning-of-life":MeaningOfLife,

@@ -86,7 +86,9 @@ var LogLayer = cc.Layer.extend({
             i++;
         },this);
 
-        listView.scrollToBottom(0.3, true);
+        listView.runAction(new cc.sequence(new cc.DelayTime(0.3), new cc.CallFunc(function(){
+            listView.scrollToBottom(0.3, true)
+        },this)));;
     }
 });
 

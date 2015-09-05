@@ -729,6 +729,7 @@ var VirtualReality = TechModel.extend({
 });
 
 var WarpEngine = TechModel.extend({
+    effect: 1,
     defaults:function(){
         return {
             displayName : "曲率引擎",

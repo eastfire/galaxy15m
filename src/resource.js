@@ -73,6 +73,7 @@ var texts = {
     max_population: "承载上限: ",
     populationGrow: "人口增长: ",
     launch_rate: "殖民船发射率: ",
+    success_rate: "殖民船殖民成功率: ",
     science_grow: "科技增加 ",
     per100Year: "每100年",
 

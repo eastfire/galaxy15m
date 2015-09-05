@@ -3,6 +3,7 @@ var LogLayer = cc.Layer.extend({
         this._super();
 
         this.model = options.model;
+        this.scrollToBottom = options.scrollToBottom;
 
         this.__initList();
 
@@ -86,9 +87,11 @@ var LogLayer = cc.Layer.extend({
             i++;
         },this);
 
-        listView.runAction(new cc.sequence(new cc.DelayTime(0.3), new cc.CallFunc(function(){
-            listView.scrollToBottom(0.3, true)
-        },this)));;
+        if ( this.scrollToBottom ) {
+            listView.runAction(new cc.sequence(new cc.DelayTime(0.3), new cc.CallFunc(function () {
+                listView.scrollToBottom(0.3, true)
+            }, this)));
+        }
     }
 });
 

@@ -49,10 +49,10 @@ var ShipModel = Backbone.Model.extend({
         if ( this.to.isColonized() ) {
             this.to.set("population",this.to.get("population")+this.get("population"));
             this.to.setColonizing(null);
-            return false;
+            return "merge";
         }
 
-        var success = true;
+        var success = Math.random() < this.get("successRate");
 
         if ( success ) {
             colony = new ColonyModel({
@@ -60,7 +60,10 @@ var ShipModel = Backbone.Model.extend({
                 population: this.get("population")
             });
             this.to.colonize(colony);
+            return "success";
+        } else {
+            this.to.setColonizing(null);
+            return "fail";
         }
-        return success;
     }
 });

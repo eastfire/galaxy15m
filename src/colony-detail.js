@@ -109,6 +109,17 @@ var ColonyDetailSprite = cc.Scale9Sprite.extend({
         this.addChild(this.launchRateLabel);
         y -= lineHeight;
 
+        this.successRateLabel = new cc.LabelTTF("", null, dimens.colony_label);
+        this.successRateLabel.attr({
+            color: colors.log_label,
+            x: 30,
+            y: y,
+            anchorX: 0,
+            anchorY: 0.5
+        })
+        this.addChild(this.successRateLabel);
+        y -= lineHeight;
+
         this.scienceRateLabel = new cc.LabelTTF("", null, dimens.colony_label);
         this.scienceRateLabel.attr({
             color: colors.log_label,
@@ -172,6 +183,7 @@ var ColonyDetailSprite = cc.Scale9Sprite.extend({
 
         this.populationGrowLabel.setString(texts.populationGrow+Math.round(this.model.get("populationGrowRate")*100)+"% "+texts.per100Year);
         this.launchRateLabel.setString(texts.launch_rate+Math.round(this.model.get("launchRate")*100)+"% "+texts.per100Year);
+        this.successRateLabel.setString(texts.success_rate+Math.round(this.model.get("successRate")*100)+"% ");
         this.scienceRateLabel.setString(texts.science_grow+Math.round(this.model.get("scienceGenerate")*100)/100+"点 "+texts.per100Year);
     }
 })

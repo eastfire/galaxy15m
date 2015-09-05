@@ -198,7 +198,7 @@ var UILayer = cc.Layer.extend({
             onTouchEnded: function (touch, event) {
                 var target = event.getCurrentTarget();
                 target.opacity = 200;
-                cc.director.pushScene(new LogScene({model : self.model}))
+                cc.director.pushScene(new LogScene({model : self.model, scrollToBottom: true}))
             }
         });
         cc.eventManager.addListener(logClickListener, this.logBg);
@@ -549,10 +549,12 @@ var MainGameLayer = cc.Layer.extend({
         time = time/100;
         shipSprite.runAction(new cc.sequence(new cc.moveTo(time, to.get("x"), to.get("y")), new cc.callFunc(function(){
             var result = shipModel.evaluateColonize();
-            if ( result ) {
+            if ( result === "success" ) {
                 this.uiLayer.showLog(shipModel.get("name") + "在 " + to.get("name") + " 建立了殖民地 " + to.colony.get("name"));
-            } else {
+            } else if ( result === "merge" ) {
                 this.uiLayer.showLog(shipModel.get("name") + "到达 " + to.get("name")+" 与 "+to.colony.get("name")+" 的殖民者汇合");
+            } else if ( result === "fail" ) {
+                this.uiLayer.showLog(shipModel.get("name") + "在 " + to.get("name") + " 殖民失败。");
             }
             gameModel.removeShip(shipModel);
             shipSprite.removeFromParent(true);

@@ -119,6 +119,7 @@ var GameModel = Backbone.Model.extend({
     },
     initAll:function(){
         this._shipCount = 0;
+        this._totalShipCount = 0;
         this._initTech();
         this._generateGalaxy();
         this._initColony();
@@ -204,10 +205,14 @@ var GameModel = Backbone.Model.extend({
     },
     addShip:function(ship){
         this._shipCount ++;
+        this._totalShipCount++;
         this.trigger("launch", ship);
     },
     removeShip:function(ship){
         this._shipCount --;
+    },
+    getShipCountInHistory:function(){
+        return this._totalShipCount;
     },
     getPopulation:function(change) {
         this.set("totalPopulation",this.get("totalPopulation")+change);

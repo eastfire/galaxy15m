@@ -83,7 +83,8 @@ var ColonyModel = Backbone.Model.extend({
                 war: 0
             },
 
-            launchRate: 0
+            launchRate: 0,
+            successRate: 0.5
         }
     },
     initialize:function(){
@@ -152,8 +153,13 @@ var ColonyModel = Backbone.Model.extend({
         if ( destStar ) {
             var immigrant = gameModel.get("shipCapacity");
             var ship = new ShipModel({
+                successRate: this.get("successRate"),
                 population: immigrant
             });
+            if ( window.gameModel.getShipCountInHistory() === 0 ) {
+                cc.log("special");
+                ship.set("successRate",1);
+            }
             this.set("population", this.get("population") - immigrant);
             ship.from = this.starSystem;
             ship.to = destStar;

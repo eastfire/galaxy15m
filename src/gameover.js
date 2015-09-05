@@ -101,7 +101,7 @@ var GameOverLayer = cc.Layer.extend({
             cc.spriteFrameCache.getSpriteFrame("button-short-default.png"),
             cc.spriteFrameCache.getSpriteFrame("button-short-press.png"),
             function () {
-                cc.director.pushScene(new LogScene({model: this.model}))
+                cc.director.pushScene(new LogScene({model: this.model, scrollToBottom:false}))
             }, this );
 
         logItem.attr({

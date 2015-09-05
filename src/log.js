@@ -4,7 +4,8 @@ var LogLayer = cc.Layer.extend({
 
         this.model = options.model;
         this.scrollToBottom = options.scrollToBottom;
-
+        this.limit = options.limit || 100;
+        this.filter = options.filter;
         this.__initList();
 
         this.__initBackground();
@@ -73,13 +74,20 @@ var LogLayer = cc.Layer.extend({
     },
     __renderList:function(){
         var listView = this.listView;
-        _.each(this.model.getLogs(),function(log) {
+        var logs;
+        if ( this.filter ) {
+            logs = _.filter(this.model.getLogs(), this.filter);
+        } else {
+            logs = this.model.getLogs();
+        }
+        logs = _.last(logs,this.limit);
+        _.each(logs,function(log) {
             listView.pushBackDefaultItem();
         },this);
 
         // set item data
         var i = 0;
-        _.each(this.model.getLogs(),function(log){
+        _.each(logs,function(log){
             var item = listView.getItem(i);
             var label = item.getChildByName("LogLabel");
             label.setTextColor(colors.log_label);
@@ -102,7 +110,8 @@ var LogScene = cc.Scene.extend({
     },
     onEnter:function () {
         this._super();
-        var layer = new LogLayer(this.options);
-        this.addChild(layer);
+        if ( this.layer ) return;
+        this.layer = new LogLayer(this.options);
+        this.addChild(this.layer);
     }
 });

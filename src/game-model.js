@@ -25,7 +25,7 @@ var GameModel = Backbone.Model.extend({
             unlockedTech: [
                 ["exoskeleton","space-elevator","virtual-reality","memory-storage", "spirit-of-science","bionic","nanobot","great-firewall"],
                 ["anti-gravity","fusion-drive","clone-human","cure-cancer","psychohistory","spirit-of-adventure","gill","cyber-brain"],
-                ["anti-matter","cure-old","multiverse-communication","intelligent-dolphin","resistance-cold","resistance-heat"],
+                ["anti-matter","cure-old","multiverse-communication","intelligent-dolphin","resistance-cold","resistance-heat","mind-control"],
                 ["warp-engine","intelligent-ape","wing","telekinesis"],
                 ["dyson-sphere","meaning-of-life","time-machine","group-mind"]
             ],

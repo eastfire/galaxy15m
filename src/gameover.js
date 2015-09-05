@@ -101,7 +101,11 @@ var GameOverLayer = cc.Layer.extend({
             cc.spriteFrameCache.getSpriteFrame("button-short-default.png"),
             cc.spriteFrameCache.getSpriteFrame("button-short-press.png"),
             function () {
-                cc.director.pushScene(new LogScene({model: this.model, scrollToBottom:false}))
+                cc.director.pushScene(new LogScene({model: this.model, scrollToBottom:false,
+                    limit: 502,
+                    filter:function(log){
+                        return log.contains("建立了殖民地") || log.contains("准备进入更高维度的升华")
+                    }}));
             }, this );
 
         logItem.attr({
@@ -355,7 +359,8 @@ var GameOverScene = cc.Scene.extend({
     },
     onEnter:function () {
         this._super();
-        var layer = new GameOverLayer(this.options);
-        this.addChild(layer);
+        if ( this.layer ) return;
+        this.layer = new GameOverLayer(this.options);
+        this.addChild(this.layer);
     }
 });

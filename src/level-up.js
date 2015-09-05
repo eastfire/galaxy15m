@@ -60,7 +60,8 @@ var TechLayer = cc.LayerColor.extend({
     },
     closeLevelUp:function(){
         cc.director.popScene();
-        if ( this.model.isAllTechPyramidFull() ) {
+        if ( this.model.isAllTechPyramidFull() && !this.model.get("ascending") ) {
+            this.model.set("ascending",true);
             this.model.trigger("ascension");
         }
     },
@@ -518,7 +519,8 @@ var TechScene = cc.Scene.extend({
     },
     onEnter:function () {
         this._super();
-        var layer = new TechLayer(this.options);
-        this.addChild(layer);
+        if ( this.layer ) return;
+        this.layer = new TechLayer(this.options);
+        this.addChild(this.layer);
     }
 });

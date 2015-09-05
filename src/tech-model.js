@@ -456,7 +456,7 @@ var MemoryStorage = TechModel.extend({
 });
 
 var MindControl = TechModel.extend({
-    negativeEffect: 0.3,
+    negativeEffect: 0.4,
     defaults:function(){
         return {
             displayName : "心灵控制",
@@ -468,7 +468,7 @@ var MindControl = TechModel.extend({
         }
     },
     getDescription:function(){
-        return "避免灾难影响。人性减"+Math.round(this.negativeEffect*100)+"%";
+        return "避免所有灾难影响。人性减"+Math.round(this.negativeEffect*100)+"%";
     },
     onGain:function(){
         gameModel.registerEffectingTech("warRate", this, function(rate){

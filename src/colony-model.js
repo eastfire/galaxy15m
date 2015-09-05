@@ -157,7 +157,6 @@ var ColonyModel = Backbone.Model.extend({
                 population: immigrant
             });
             if ( window.gameModel.getShipCountInHistory() === 0 ) {
-                cc.log("special");
                 ship.set("successRate",1);
             }
             this.set("population", this.get("population") - immigrant);

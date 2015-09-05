@@ -232,6 +232,7 @@ var UILayer = cc.Layer.extend({
         } else cc.director.runScene( new GameOverScene({model:this.model}) );
     },
     onStartAscension:function(){
+        this.showLog(this.model.get("playerName") + "的科技金字塔研发完毕，准备进入更高维度的升华。");
         this.scienceItem.setNormalSpriteFrame(cc.spriteFrameCache.getSpriteFrame("icon-ascension.png"))
         this.scienceItem.setSelectedSpriteFrame(cc.spriteFrameCache.getSpriteFrame("icon-ascension.png"))
     },

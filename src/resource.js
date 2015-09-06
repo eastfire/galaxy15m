@@ -2,7 +2,8 @@ var res = {
     stars_plist : "res/stars.plist",
     stars_png : "res/stars.png",
     ui_plist : "res/ui.plist",
-    ui_png : "res/ui.png"
+    ui_png : "res/ui.png",
+    background_mp3: "res/background.mp3"
 };
 
 var g_resources = [];

@@ -10,6 +10,7 @@ var UILayer = cc.Layer.extend({
         this.model = options.model;
 
         this.initView();
+        this.initAudio();
         this.render();
 
         this.model.on("change:year",this.renderTime,this);
@@ -73,7 +74,22 @@ var UILayer = cc.Layer.extend({
             anchorX: 0.5,
             anchorY: 0.5
         });
-        var menu = new cc.Menu([this.zoomInItem, this.zoomOutItem, scienceItem]);
+        var settingItem = new cc.MenuItemImage(
+            cc.spriteFrameCache.getSpriteFrame("setting-default.png"),
+            cc.spriteFrameCache.getSpriteFrame("setting-press.png"),
+            function () {
+                if ( mainLayer._status === LOOP_PAUSE ) return;
+                this.showSetting();
+            }, this);
+        settingItem.attr({
+            x: cc.winSize.width - 16,
+            y: topBarY,
+            scaleX: 0.8,
+            scaleY: 0.8,
+            anchorX: 0.5,
+            anchorY: 0.5
+        });
+        var menu = new cc.Menu([this.zoomInItem, this.zoomOutItem, scienceItem, settingItem]);
         menu.x = 0;
         menu.y = 0;
         this.addChild(menu, UI_Z_INDEX);
@@ -203,6 +219,15 @@ var UILayer = cc.Layer.extend({
         });
         cc.eventManager.addListener(logClickListener, this.logBg);
     },
+    initAudio:function(){
+        var store = cc.sys.localStorage.getItem("music");
+        if ( store != null ) {
+            this.music = store;
+        } else {
+            this.music = 0.5;
+        }
+        cc.audioEngine.setMusicVolume(this.music);
+    },
     renderScore:function(){
         this.scoreLabel.setString(Math.round(this.model.get("score")));
     },
@@ -226,6 +251,7 @@ var UILayer = cc.Layer.extend({
         this.renderScience();
     },
     onGameOver:function(){
+        cc.audioEngine.stopMusic(false);
         this.stopAllActions();
         if ( this.model.hasTech("multiverse-communication")) {
             cc.director.runScene( new MultiverseTechScene({model:this.model}) );
@@ -253,6 +279,44 @@ var UILayer = cc.Layer.extend({
             height: this.logBg.height
         });
         this.logBg.addChild(this.logLabel);
+    },
+    showSetting:function(){
+        var bg = showModalDialog(this.parent, "系统设置",function(){
+        },this);
+        var musicItem = new cc.MenuItemImage(
+            cc.spriteFrameCache.getSpriteFrame("music-on-default.png"),
+            cc.spriteFrameCache.getSpriteFrame("music-on-press.png"),
+            function () {
+                if ( cc.audioEngine.getMusicVolume() ) {
+                    cc.audioEngine.setMusicVolume(0);
+                    cc.sys.localStorage.setItem("music",0);
+                    musicItem.setNormalSpriteFrame(cc.spriteFrameCache.getSpriteFrame("music-off-default.png"));
+                    musicItem.setSelectedSpriteFrame(cc.spriteFrameCache.getSpriteFrame("music-off-press.png"));
+                } else {
+                    cc.audioEngine.setMusicVolume(0.5);
+                    cc.sys.localStorage.setItem("music",0.5);
+                    musicItem.setNormalSpriteFrame(cc.spriteFrameCache.getSpriteFrame("music-on-default.png"));
+                    musicItem.setSelectedSpriteFrame(cc.spriteFrameCache.getSpriteFrame("music-on-press.png"));
+                }
+            }, this);
+        if ( cc.audioEngine.getMusicVolume() ) {
+            musicItem.setNormalSpriteFrame(cc.spriteFrameCache.getSpriteFrame("music-on-default.png"));
+            musicItem.setSelectedSpriteFrame(cc.spriteFrameCache.getSpriteFrame("music-on-press.png"));
+        } else {
+            musicItem.setNormalSpriteFrame(cc.spriteFrameCache.getSpriteFrame("music-off-default.png"));
+            musicItem.setSelectedSpriteFrame(cc.spriteFrameCache.getSpriteFrame("music-off-press.png"));
+        }
+        musicItem.attr({
+            x: bg.width /2,
+            y: bg.height /2,
+            anchorX: 0.5,
+            anchorY: 0.5
+        });
+
+        var menu = new cc.Menu([musicItem]);
+        menu.x = 0;
+        menu.y = 0;
+        bg.addChild(menu);
     }
 });
 
@@ -289,6 +353,7 @@ var MainGameLayer = cc.Layer.extend({
         this.showInputName(function() {
             showModalDialog(this.parent, "公元2112年6月15日10点10分10秒\n阿西莫夫号殖民船从太阳系启航前往α半人马座\n" + this.model.get("playerName") + "进入了银河纪元\n" +
                 MAX_YEAR + "年时间里他们能将足迹踏遍银河吗？\n让我们拭目以待！", function () {
+                cc.audioEngine.playMusic(res.background_mp3, true);
                 this.focusToGalaxyPosition(this.model.startingStarSystem.get("x"), this.model.startingStarSystem.get("y"), times.zoom);
                 this.model.startingStarSystem.colony._launch();
                 this.loop();
@@ -620,13 +685,17 @@ var MainGameLayer = cc.Layer.extend({
         this._status = LOOP_PAUSE;
         var targets = this.actionManager.pauseAllRunningActions();
         var self = this;
+        var layer = new cc.Layer();
+        this.uiLayer.addChild(layer,UI_Z_INDEX+1);
+        blockAllTouchEvent(layer);
+
         var dialogBg = new cc.Scale9Sprite(cc.spriteFrameCache.getSpriteFrame("button-bg-default.png"));
         dialogBg.x = cc.winSize.width/2;
         dialogBg.y = cc.winSize.height/2;
         dialogBg.width = 480;
         dialogBg.height = 360;
 
-        this.uiLayer.addChild(dialogBg,100);
+        layer.addChild(dialogBg,100);
 
         var label = new cc.LabelTTF("请输入种族", null, dimens.top_bar_label);
         label.attr({
@@ -735,7 +804,7 @@ var MainGameLayer = cc.Layer.extend({
         }
 
         var closeDialog = function(){
-            dialogBg.removeFromParent(true);
+            layer.removeFromParent(true);
             self.actionManager.resumeTargets(targets);
             self._status = LOOP_START;
             if (callback) callback.call(context);

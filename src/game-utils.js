@@ -14,6 +14,8 @@ var ModalDialogLayer = cc.Layer.extend({
         dialogBg.width = 480;
         dialogBg.height = 360;
 
+        this.dialogBg = dialogBg;
+
         this.addChild(dialogBg);
 
         var label = new cc.LabelTTF(options.text, null, dimens.top_bar_label);
@@ -78,10 +80,12 @@ var ModalDialogLayer = cc.Layer.extend({
 });
 
 var showModalDialog = function(scene, text, callback, context) {
-    scene.addChild(new ModalDialogLayer({
+    var layer;
+    scene.addChild(layer = new ModalDialogLayer({
         scene: scene,
         text:text,
         callback: callback,
         context: context
     }), 200);
+    return layer.dialogBg;
 }

@@ -26,7 +26,7 @@ var OLD_CITY_NAME_POOL = [ "伦敦","纽约","巴黎","东京","香港","首尔"
     "金斯敦","巴西利亚","新山","西安","福冈","谢菲尔德","伊兹密尔","诺丁汉","得梅因","坎皮纳斯","基希讷乌","海法",
     "麦迪逊","埃里温","宿务市","纳闽","萨尔瓦多",
     "特洛伊","巴格达","大马士革","斯巴达","亚特兰蒂斯","伊甸"];
-var NEW_COLONY_NAME_POOL = [ "海伯利安","鲸心","川陀","塔图因"]
+var NEW_COLONY_NAME_POOL = [ "海伯利安","鲸心","川陀","塔图因","霍斯","那布"]
 
 var colonyNameGenerated;
 var generateColonyName=function() {
@@ -97,7 +97,9 @@ var ColonyModel = Backbone.Model.extend({
         this._evaluateMaxPopulation();
         this._evaluatePopulationGrowRate();
         this._generatePopulation();
+        this._evaluateCreative();
         this._generateScience();
+        this._evaluateProduction();
         this._evaluateLaunchRate();
         if ( this._canLaunch() ) {
             this._launch();
@@ -195,6 +197,7 @@ var ColonyModel = Backbone.Model.extend({
                 rate = gameModel.techEffect("populationGrowRate", rate);
             }
         }
+        //TODO gravity atmosphere penalty
         this.set("populationGrowRate",rate);
     },
     hasDisaster:function(){
@@ -316,39 +319,45 @@ var ColonyModel = Backbone.Model.extend({
             this.set("population", currentPopulation + change);
         }
     },
+    _evaluateProduction:function(){
+        var p = 100;
+        if ( this.planet.get("gravity") == GRAVITY_HIGH ) {
+            p -= 50;
+        }
+        this.set("production",gameModel.techEffect("production", 100));
+    },
+    _evaluateCreative:function(){
+        this.set("creative",gameModel.techEffect("creative", 100));
+    },
     _evaluateLaunchRate:function(){
         if ( gameModel.get("shipCapacity") > this.get("population") ) {
             this.set("launchRate", 0);
             return;
         }
-        var production;
+        var production = 0;
         var population = this.get("population");
         var maxPopulationLaunchThreshold = gameModel.get("maxPopulationLaunchThreshold");
         if ( this.get("currentDisasterType") ) {
             production = 0;
         } else {
-            production = this.get("population") / 10000000;
+            production = this.get("production");
 
             var rate = 1;
             rate = gameModel.techEffect("launchRate", rate);
-            if ( population >= this.get("maxPopulation") && population >= maxPopulationLaunchThreshold )
-                rate += gameModel.get("maxPopulationIncreaseLaunchRate");
+//            if ( population >= this.get("maxPopulation") && population >= maxPopulationLaunchThreshold )
+//                rate += gameModel.get("maxPopulationIncreaseLaunchRate");
 
             production *= rate;
-
-            production = Math.min(production, 0.5);
             //TODO gravity adjust
         }
-        this.set("launchRate", production);
+        this.set("launchRate", this.get("population") / 1000000000 * production);
     },
     _generateScience:function(){
-        var adjust = 1;
+        var adjust = this.get("creative")/100;
         if ( this.get("currentDisasterType") ) {
             adjust = 0;
-        } else {
-            adjust = gameModel.techEffect("scienceAdjust", adjust);
         }
-        if ( adjust != 0 ) {
+        if ( adjust > 0 ) {
             var science = this.get("population") / 1000000 ;
             science *= adjust;
 

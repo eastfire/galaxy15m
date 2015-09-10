@@ -184,7 +184,7 @@ var CureOld = TechModel.extend({
 });
 
 var CyberBrain = TechModel.extend({
-    effect: 0.1,
+    effect: 10,
     negativeEffect: 0.1,
     defaults:function(){
         return {
@@ -197,11 +197,11 @@ var CyberBrain = TechModel.extend({
         }
     },
     getDescription:function(){
-        return "科技增长加"+Math.round(this.effect*100)+"%，人性-"+Math.round(this.negativeEffect*100)+"%";
+        return "创造力加"+Math.round(this.effect)+"，人性-"+Math.round(this.negativeEffect*100)+"%";
     },
     onGain:function(){
-        gameModel.registerEffectingTech("scienceAdjust", this, function(rate){
-            return rate+this.effect;
+        gameModel.registerEffectingTech("creative", this, function(creative){
+            return creative+this.effect;
         });
         gameModel.set("humanity",gameModel.get("humanity") - this.negativeEffect);
     }
@@ -230,7 +230,7 @@ var DysonSphere = TechModel.extend({
 });
 
 var Exoskeleton = TechModel.extend({
-    effect: 0.2,
+    effect: 10,
     defaults:function(){
         return {
             displayName : "外骨骼",
@@ -242,10 +242,10 @@ var Exoskeleton = TechModel.extend({
         }
     },
     getDescription:function(){
-        return "增加"+Math.round(this.effect*100)+"%殖民船发射概率";
+        return "生产力增加"+Math.round(this.effect);
     },
     onGain:function(){
-        gameModel.registerEffectingTech("launchRate", this, function(production){
+        gameModel.registerEffectingTech("production", this, function(production){
             return production+this.effect;
         });
     }
@@ -303,7 +303,7 @@ var Gill = TechModel.extend({
 
 var GreatFirewall = TechModel.extend({
     effect: 1,
-    negativeEffect: 0.1,
+    negativeEffect: 10,
     defaults:function(){
         return {
             displayName : "宇宙防火墙",
@@ -315,11 +315,11 @@ var GreatFirewall = TechModel.extend({
         }
     },
     getDescription:function(){
-        return "人工智能起义的发生概率减少"+Math.round(this.effect*100)+"%，科技增长减少"+Math.round(this.negativeEffect*100)+"%";
+        return "人工智能起义的发生概率减少"+Math.round(this.effect*100)+"%，创造力减少"+Math.round(this.negativeEffect);
     },
     onGain:function(){
-        gameModel.registerEffectingTech("scienceAdjust", this, function(rate){
-            return rate-this.negativeEffect;
+        gameModel.registerEffectingTech("creative", this, function(creative){
+            return creative-this.negativeEffect;
         });
         gameModel.registerEffectingTech("aiRate", this, function(rate){
             return rate*(1-this.effect);
@@ -374,7 +374,7 @@ var IntelligentDolphin = TechModel.extend({
 });
 
 var IntelligentApe = TechModel.extend({
-    effect: 0.3,
+    effect: 30,
     defaults:function(){
         return {
             displayName : "智能猩猩",
@@ -386,11 +386,11 @@ var IntelligentApe = TechModel.extend({
         }
     },
     getDescription:function(){
-        return "科技增长加"+Math.round(this.effect*100)+"%";
+        return "创造力加"+Math.round(this.effect*100);
     },
     onGain:function(){
-        gameModel.registerEffectingTech("scienceAdjust", this, function(rate){
-            return rate+this.effect;
+        gameModel.registerEffectingTech("creative", this, function(creative){
+            return creative+this.effect;
         });
     }
 });
@@ -599,7 +599,7 @@ var ResistanceHeat = TechModel.extend({
 });
 
 var SpiritOfAdventure = TechModel.extend({
-    effect: 0.2,
+    effect: 20,
     defaults:function(){
         return {
             displayName : "探险精神",
@@ -611,10 +611,10 @@ var SpiritOfAdventure = TechModel.extend({
         }
     },
     getDescription:function(){
-        return "增加"+Math.round(this.effect*100)+"%殖民船发射概率";
+        return "生产力增加"+Math.round(this.effect);
     },
     onGain:function(){
-        gameModel.registerEffectingTech("launchRate", this, function(rate){
+        gameModel.registerEffectingTech("production", this, function(rate){
             return rate+this.effect;
         });
     }
@@ -658,7 +658,7 @@ var SpaceElevator = TechModel.extend({
     }
 });
 var Telekinesis = TechModel.extend({
-    effect:0.3,
+    effect:30,
     defaults:function(){
         return {
             displayName : "意念移物",
@@ -670,10 +670,10 @@ var Telekinesis = TechModel.extend({
         }
     },
     getDescription:function(){
-        return "飞船发射率加"+Math.round(this.effect*100)+"%";
+        return "增加生产力"+Math.round(this.effect);
     },
     onGain:function(){
-        gameModel.registerEffectingTech("launchRate", this, function(rate){
+        gameModel.registerEffectingTech("production", this, function(rate){
             return rate+this.effect;
         });
     }
@@ -703,7 +703,7 @@ var TimeMachine = TechModel.extend({
 });
 
 var VirtualReality = TechModel.extend({
-    negativeEffect: 0.1,
+    negativeEffect: 10,
     effect: 0.9,
     defaults:function(){
         return {
@@ -716,14 +716,14 @@ var VirtualReality = TechModel.extend({
         }
     },
     getDescription:function(){
-        return "降低战争爆发概率"+Math.round(this.effect*100)+"%，飞船发射率下降"+Math.round(this.negativeEffect*100)+"%";
+        return "降低战争爆发概率"+Math.round(this.effect*100)+"%，生产力下降"+Math.round(this.negativeEffect);
     },
     onGain:function(){
         gameModel.registerEffectingTech("warRate", this, function(rate){
             return rate*(1-this.effect);
         });
-        gameModel.registerEffectingTech("launchRate", this, function(rate){
-            return rate-this.negativeEffect;
+        gameModel.registerEffectingTech("production", this, function(production){
+            return production-this.negativeEffect;
         });
     }
 });

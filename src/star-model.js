@@ -384,7 +384,7 @@ var PlanetModel = Backbone.Model.extend({ //行星
             temperature: TEMPERATURE_NORMAL, // 0: very cold, 1: cold: 2: normal; 3:hot; 4:very hot
 
             //orbitalPeriod: 1, //公转周期：高丝年
-            displayGravity: 1, //重力：单位：G
+            displayGravity: 0, //重力：单位：G
             gravity: GRAVITY_NORMAL, // 0: very low; 1: low; 2: normal; 3: high; 4:very high
 
             //rotationPeriod: 1, //自转周期：标准天

@@ -98,6 +98,17 @@ var ColonyDetailSprite = cc.Scale9Sprite.extend({
         this.addChild(this.populationGrowLabel);
         y -= lineHeight;
 
+        this.productionLabel = new cc.LabelTTF("", null, dimens.colony_label);
+        this.productionLabel.attr({
+            color: colors.log_label,
+            x: 30,
+            y: y,
+            anchorX: 0,
+            anchorY: 0.5
+        })
+        this.addChild(this.productionLabel);
+        y -= lineHeight;
+
         this.launchRateLabel = new cc.LabelTTF("", null, dimens.colony_label);
         this.launchRateLabel.attr({
             color: colors.log_label,
@@ -120,11 +131,22 @@ var ColonyDetailSprite = cc.Scale9Sprite.extend({
         this.addChild(this.successRateLabel);
         y -= lineHeight;
 
+        this.creativeLabel = new cc.LabelTTF("", null, dimens.colony_label);
+        this.creativeLabel.attr({
+            color: colors.log_label,
+            x: 30,
+            y: y,
+            anchorX: 0,
+            anchorY: 0.5
+        })
+        this.addChild(this.creativeLabel);
+        y -= lineHeight;
+
         this.scienceRateLabel = new cc.LabelTTF("", null, dimens.colony_label);
         this.scienceRateLabel.attr({
             color: colors.log_label,
             x: 30,
-            y:y,
+            y: y,
             anchorX: 0,
             anchorY: 0.5
         })
@@ -182,8 +204,10 @@ var ColonyDetailSprite = cc.Scale9Sprite.extend({
         this.maxPopulationLabel.setString(texts.max_population+bigNumberToHumanReadable_zh_cn(this.model.get("maxPopulation")));
 
         this.populationGrowLabel.setString(texts.populationGrow+Math.round(this.model.get("populationGrowRate")*100)+"% "+texts.per100Year);
+        this.productionLabel.setString(texts.production+Math.round(this.model.get("production")));
         this.launchRateLabel.setString(texts.launch_rate+Math.round(this.model.get("launchRate")*100)+"% "+texts.per100Year);
         this.successRateLabel.setString(texts.success_rate+Math.round(this.model.get("successRate")*100)+"% ");
+        this.creativeLabel.setString(texts.creative+Math.round(this.model.get("creative")));
         this.scienceRateLabel.setString(texts.science_grow+Math.round(this.model.get("scienceGenerate")*100)/100+"点 "+texts.per100Year);
     }
 })

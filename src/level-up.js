@@ -226,6 +226,20 @@ var TechLayer = cc.LayerColor.extend({
         }
         this.showTechDetail(techModel, level, null, null);
     },
+    hideTechDetail:function(){
+        if ( this.techDetailBg ) {
+            var techDetailBgWidth = 300;
+            var offsetX = techDetailBgWidth - 16;
+            var tempBg = this.techDetailBg;
+            this.techDetailBg = null;
+            this.currentShowingTechModel = null;
+            tempBg.stopAllActions();
+            tempBg.runAction(cc.sequence(cc.moveBy(times.show_tech_detail, offsetX, 0),
+                cc.callFunc(function () {
+                    tempBg.removeFromParent();
+                }, this)));
+        }
+    },
     showTechDetail:function(techModel,level, callback,context){
         if ( this.currentShowingTechModel === techModel ) return;
         var cost;
@@ -365,16 +379,7 @@ var TechLayer = cc.LayerColor.extend({
                     this.renderPyramid();
                     if ( callback ) callback.call(context);
                 }
-                if ( this.techDetailBg ) {
-                    var tempBg = this.techDetailBg;
-                    this.techDetailBg = null;
-                    this.currentShowingTechModel = null;
-                    tempBg.stopAllActions();
-                    tempBg.runAction(cc.sequence(cc.moveBy(times.show_tech_detail, offsetX, 0),
-                        cc.callFunc(function () {
-                            tempBg.removeFromParent();
-                        }, this)));
-                }
+                this.hideTechDetail();
             }, this);
         buttonItem.attr({
             x: techDetailBgWidth/2-7,
@@ -449,6 +454,7 @@ var TechLayer = cc.LayerColor.extend({
             cc.spriteFrameCache.getSpriteFrame("back-press.png"),
             function () {
                 this.hideTechList();
+                this.hideTechDetail();
             }, this);
         closeItem.attr({
             x: 25+26,

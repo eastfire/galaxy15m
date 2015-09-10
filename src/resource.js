@@ -70,11 +70,13 @@ var texts = {
     restart: "再来一次大爆炸",
 
 
-    population: "人口: ",
-    max_population: "承载上限: ",
-    populationGrow: "人口增长: ",
-    launch_rate: "殖民船发射率: ",
-    success_rate: "殖民船殖民成功率: ",
+    population: "人口：",
+    max_population: "承载上限：",
+    populationGrow: "人口增长：",
+    production: "生产力：",
+    launch_rate: "殖民船发射率：",
+    success_rate: "殖民船殖民成功率：",
+    creative: "创造力：",
     science_grow: "科技增加 ",
     per100Year: "每100年",
 

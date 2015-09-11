@@ -52,7 +52,7 @@ cc.game.onStart = function(){
     cc.view.setDesignResolutionSize(800, 450, cc.ResolutionPolicy.SHOW_ALL);
     cc.view.resizeWithBrowserSize(true);
     //load resources
-    cc.LoaderScene.preload(g_resources, function () {
+    cc.MyLoaderScene.preload(g_resources, function () {
         cc.spriteFrameCache.addSpriteFrames(res.stars_plist);
         cc.spriteFrameCache.addSpriteFrames(res.ui_plist);
         cc.director.runScene(new MainGameScene());

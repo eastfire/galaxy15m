@@ -229,6 +229,7 @@
                 <file name="src/libs/utils.js"/>
                 <file name="src/libs/cocos-utils.js"/>
                 <file name="src/resource.js"/>
+                <file name="src/loading.js"/>
                 <file name="src/game-utils.js"/>
                 <file name="src/colony-model.js"/>
                 <file name="src/ship-model.js"/>

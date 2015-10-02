@@ -7,7 +7,7 @@ var UP_SCALE_RATE = 35;
 var DISTANCE_ADJUST = 2;
 var START_YEAR = 0;
 var MAX_YEAR = 100000;
-var MAX_SHIP_NUMBER = 250;
+var MAX_SHIP_NUMBER = 100;
 
 var GameModel = Backbone.Model.extend({
     defaults: function () {
@@ -24,7 +24,7 @@ var GameModel = Backbone.Model.extend({
             savedTech: [],
             initTech: [["quantum-communication"]],
             unlockedTech: [
-                ["exoskeleton","space-elevator","virtual-reality","memory-storage", "spirit-of-science","bionic","nanobot","great-firewall"],
+                ["exoskeleton","space-elevator","virtual-reality","memory-storage", "spirit-of-science","bionic","nanobot","great-firewall","superconductor"],
                 ["anti-gravity","fusion-drive","clone-human","cure-cancer","psychohistory","spirit-of-adventure","gill","cyber-brain"],
                 ["anti-matter","cure-old","multiverse-communication","intelligent-dolphin","resistance-cold","resistance-heat","mind-control"],
                 ["warp-engine","intelligent-ape","wing","telekinesis"],
@@ -106,6 +106,7 @@ var GameModel = Backbone.Model.extend({
             this._tech[level].push(techModel);
         }
         this.addTechCountByType(techModel);
+        this.techEffectGainTech(techModel);
         techModel.onGain();
     },
     addTechCountByType:function(techModel){
@@ -361,6 +362,11 @@ var GameModel = Backbone.Model.extend({
         return _.reduce(this._effectTechEntry[type],function(p, techModelEntry){
             return techModelEntry.func.call(techModelEntry.model, p);
         }, production);
+    },
+    techEffectGainTech:function(tech){
+        _.each(this._effectTechEntry["gainTech"],function(entry){
+            entry.func.call(entry.model, tech);
+        });
     },
     addLog:function(text){
         this._logs.push(Math.round(this.get("year"))+"G.A. "+text);

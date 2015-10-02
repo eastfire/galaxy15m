@@ -4,7 +4,7 @@ var LogLayer = cc.Layer.extend({
 
         this.model = options.model;
         this.scrollToBottom = options.scrollToBottom;
-        this.limit = options.limit || 100;
+        this.limit = options.limit || 20;
         this.filter = options.filter;
         this.__initList();
 

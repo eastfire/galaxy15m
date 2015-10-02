@@ -352,7 +352,7 @@ var MainGameLayer = cc.Layer.extend({
 
         this.showInputName(function() {
             showModalDialog(this.parent, "公元2112年6月15日10点10分10秒\n阿西莫夫号殖民船从太阳系启航前往α半人马座\n" + this.model.get("playerName") + "进入了银河纪元\n" +
-                MAX_YEAR + "年时间里他们能将足迹踏遍银河吗？\n让我们拭目以待！\n(注：本银河系星图纯属虚构，如有雷同纯属巧合)", function () {
+                MAX_YEAR + "年时间里他们能将足迹踏遍银河吗？\n让我们拭目以待！\n(本银河系星图纯属虚构，如有雷同纯属巧合)", function () {
                 cc.audioEngine.playMusic(res.background_mp3, true);
                 this.focusToGalaxyPosition(this.model.startingStarSystem.get("x"), this.model.startingStarSystem.get("y"), times.zoom);
                 this.model.startingStarSystem.colony._launch();

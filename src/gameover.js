@@ -243,17 +243,28 @@ var ScoreBoardLayer = cc.LayerColor.extend({
         this.addChild(listView,2);
 
         // create model
-        var default_label = new ccui.Text("","Arial", dimens.score_line_font_size);
-        default_label.setName("ScoreLabel");
-        default_label.setTouchEnabled(false);
+        var score_label = new ccui.Text("","Arial", dimens.score_line_font_size);
+        score_label.setName("ScoreLabel");
+        score_label.setTouchEnabled(false);
+
+        var other_label = new ccui.Text("","Arial", dimens.score_line_font_size);
+        other_label.setName("OtherLabel");
+        other_label.setTouchEnabled(false);
 
         var default_item = new ccui.Layout();
         default_item.setTouchEnabled(false);
-        default_item.setContentSize(default_label.getContentSize());
+        default_item.setContentSize(new cc.size(cc.winSize.width - 50, dimens.score_line_height));
         default_item.width = listView.width;
-        default_label.x = default_item.width / 2;
-        default_label.y = default_item.height / 2;
-        default_item.addChild(default_label);
+        score_label.x = 0;
+        score_label.anchorX = 0;
+        score_label.y = default_item.height / 2;
+
+        other_label.x = 140;
+        other_label.anchorX = 0;
+        other_label.y = default_item.height / 2;
+
+        default_item.addChild(score_label);
+        default_item.addChild(other_label);
         default_item.attr({
             height: dimens.score_line_height
         })
@@ -304,7 +315,8 @@ var ScoreBoardLayer = cc.LayerColor.extend({
             }
             var item = listView.getItem(i);
             var label = item.getChildByName("ScoreLabel");
-            this.generateOneScoreLabel(score, label);
+            var otherLabel = item.getChildByName("OtherLabel");
+            this.generateOneScoreLabel(score, label, otherLabel);
 
             i++;
         },this);
@@ -320,10 +332,11 @@ var ScoreBoardLayer = cc.LayerColor.extend({
 
             var item = listView.getItem(i);
             var label = item.getChildByName("ScoreLabel");
-            this.generateOneScoreLabel(this.score, label);
+            var otherLabel = item.getChildByName("OtherLabel");
+            this.generateOneScoreLabel(this.score, label, otherLabel);
         }
     },
-    generateOneScoreLabel:function(score, label){
+    generateOneScoreLabel:function(score, label, otherLabel){
         var color;
         if (score.r == this.score.r) {
             color = cc.color(255, 0, 0, 255);
@@ -331,24 +344,22 @@ var ScoreBoardLayer = cc.LayerColor.extend({
             color = cc.color.BLACK;
 
         var str = score.name;
-        for ( var j = dbcsByteLength(str); j < 24; j++ ){
+        for ( var j = dbcsByteLength(str); j < 28; j++ ){
             str += " ";
         }
         str += score.rate+"%";
-        for ( var j = dbcsByteLength(str); j < 22; j++ ){
+        for ( var j = dbcsByteLength(str); j < 40; j++ ){
             str += " ";
         }
-
-        var scoreStr = score.score + "分";
-        for ( var j = dbcsByteLength(str); j < 20; j++ ){
-            scoreStr = " "+scoreStr;
-        }
-        str += scoreStr + "   ";
-
         str += moment(score.timestamp).locale("zh-cn").fromNow();
 
+        var scoreStr = score.score + "分";
+
         label.setTextColor(color);
-        label.setString(str);
+        label.setString(scoreStr);
+
+        otherLabel.setTextColor(color);
+        otherLabel.setString(str);
     }
 });
 

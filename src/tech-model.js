@@ -21,7 +21,7 @@ var TechModel = Backbone.Model.extend({
     },
     getCost:function(level, position){
         if ( level <= 0 ) {
-            return this.get("cost")
+            return this.get("cost");
         } else {
             var lowerLevel = gameModel._tech[level-1];
             var match = 0;
@@ -41,8 +41,13 @@ var TechModel = Backbone.Model.extend({
             this.set("leftMatch",leftMatch);
             this.set("rightMatch",rightMatch);
             var discountPerMatch = gameModel.get("discountPerMatch");
-            return Math.round(this.get("cost")*(1-match*discountPerMatch));
+            var cost = Math.round(this.get("cost")*(1-match*discountPerMatch));
+            this._lastCacluatedCost = cost;
+            return cost;
         }
+    },
+    getLastCalculatedCost:function(){
+        return this._lastCacluatedCost || this.get("cost");
     },
     getDescription:function(){
     },
@@ -386,7 +391,7 @@ var IntelligentApe = TechModel.extend({
         }
     },
     getDescription:function(){
-        return "创造力加"+Math.round(this.effect*100);
+        return "创造力加"+Math.round(this.effect);
     },
     onGain:function(){
         gameModel.registerEffectingTech("creative", this, function(creative){
@@ -657,6 +662,30 @@ var SpaceElevator = TechModel.extend({
         gameModel.set("shipCapacity",gameModel.get("shipCapacity")+this.effect);
     }
 });
+
+var Superconductor = TechModel.extend({
+    effect: 1,
+    defaults: function(){
+        return {
+            displayName : "常温超导",
+            name: "superconductor",
+            tier: 0,
+            cost: 5,
+            types: [TECH_TYPE_PHYSICAL],
+            flavor: ""
+        }
+    },
+    getDescription:function(){
+        return "每当研发科技时，获得相当于花费"+Math.round(this.effect*100)+"%的分数";
+    },
+    onGain:function(){
+        gameModel.getScore(this.get("cost")*this.effect);
+        gameModel.registerEffectingTech("gainTech", this, function(techModel){
+            gameModel.getScore(techModel.getLastCalculatedCost()*this.effect);
+        });
+    }
+})
+
 var Telekinesis = TechModel.extend({
     effect:30,
     defaults:function(){
@@ -688,7 +717,7 @@ var TimeMachine = TechModel.extend({
             tier: 4,
             cost: 6400,
             types: [TECH_TYPE_MECHANICAL,TECH_TYPE_PHYSICAL],
-            flavor: ""
+            flavor: "如果可以重来，你还会升级这个科技吗？"
         }
     },
     getDescription:function(){
@@ -806,6 +835,7 @@ var CLASS_MAP = {
     "space-elevator":SpaceElevator,
     "spirit-of-adventure":SpiritOfAdventure,
     "spirit-of-science":SpiritOfScience,
+    superconductor: Superconductor,
     telekinesis:Telekinesis,
     "time-machine":TimeMachine,
     "virtual-reality": VirtualReality,

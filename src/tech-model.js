@@ -63,7 +63,7 @@ var AntiGravity = TechModel.extend({
             tier: 1,
             cost: 50,
             types: [TECH_TYPE_PHYSICAL],
-            flavor: "反重力的应用使得直接将一个城市打包送上太空成为可能"
+            flavor: "反重力的应用使得直接将一个城市打包送上太空成为可能。第一个被送上太空的城市被命名为库珀空间站。"
         }
     },
     getDescription:function(){
@@ -83,7 +83,7 @@ var AntiMatter = TechModel.extend({
             tier: 2,
             cost: 300,
             types: [TECH_TYPE_PHYSICAL],
-            flavor: null
+            flavor: "人类发现了用合理成本制造反物质的方法，谢天谢地，它不是用来制造武器。"
         }
     },
     getDescription:function(){
@@ -105,7 +105,7 @@ var Bionics = TechModel.extend({
             tier: 0,
             cost: 8,
             types: [TECH_TYPE_MECHANICAL, TECH_TYPE_BIOLOGICAL, TECH_TYPE_ELECTRONIC],
-            flavor: "可以替换的义肢和器官使人们在灾难中的存活率更高"
+            flavor: "可以替换的义肢和器官使人们在灾难中的存活率更高。有人将所有器官都换成了人造品，甚至大脑也换成了电子脑，被成为Ghost In Shell."
         }
     },
     getDescription:function(){
@@ -198,7 +198,7 @@ var CyberBrain = TechModel.extend({
             tier: 2,
             cost: 50,
             types: [TECH_TYPE_ELECTRONIC, TECH_TYPE_BIOLOGICAL],
-            flavor: ""
+            flavor: "无需脑后插管，因为是无线的。"
         }
     },
     getDescription:function(){
@@ -243,7 +243,7 @@ var Exoskeleton = TechModel.extend({
             tier: 0,
             cost: 10,
             types: [TECH_TYPE_MECHANICAL],
-            flavor: null
+            flavor: "这项发明将人类从每天繁重的起床活动中释放了出来。"
         }
     },
     getDescription:function(){
@@ -352,6 +352,26 @@ var GroupMind = TechModel.extend({
     }
 });
 
+var IntelligentCell = TechModel.extend({
+    effect: 5,
+    defaults:function(){
+        return {
+            displayName : "智能细胞",
+            name: "intelligent-cell",
+            tier: 4,
+            cost: 6500,
+            types: [TECH_TYPE_BIOLOGICAL, TECH_TYPE_PSYCHOLOGY],
+            flavor: ""
+        }
+    },
+    getDescription:function(){
+        return "加"+Math.round(this.effect*100)+"%人性";
+    },
+    onGain:function(){
+
+    }
+});
+
 var IntelligentDolphin = TechModel.extend({
     effect: 100000,
     defaults:function(){
@@ -361,7 +381,7 @@ var IntelligentDolphin = TechModel.extend({
             tier: 2,
             cost: 250,
             types: [TECH_TYPE_ELECTRONIC, TECH_TYPE_BIOLOGICAL],
-            flavor: ""
+            flavor: "人类提升了海豚，海豚却只会唱俳句。"
         }
     },
     getDescription:function(){
@@ -612,7 +632,7 @@ var SpiritOfAdventure = TechModel.extend({
             tier: 1,
             cost: 50,
             types: [TECH_TYPE_PSYCHOLOGY],
-            flavor: ""
+            flavor: "Space, the final frontier."
         }
     },
     getDescription:function(){
@@ -633,7 +653,7 @@ var SpiritOfScience = TechModel.extend({
             tier: 0,
             cost: 12,
             types: [TECH_TYPE_PSYCHOLOGY],
-            flavor: ""
+            flavor: "Eureka!"
         }
     },
     getDescription:function(){
@@ -789,7 +809,7 @@ var Wing = TechModel.extend({
             tier: 3,
             cost: 800,
             types: [TECH_TYPE_BIOLOGICAL],
-            flavor: ""
+            flavor: "记得藏起你的尖牙"
         }
     },
     getDescription:function(){

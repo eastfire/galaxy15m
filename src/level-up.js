@@ -353,7 +353,7 @@ var TechLayer = cc.LayerColor.extend({
             techFlavorLabel.attr({
                 color: colors.tech_detail_tech_flavor,
                 x: 20,
-                y: y ,
+                y: y - 10 ,
                 anchorX: 0,
                 anchorY: 1,
                 textAlign: cc.TEXT_ALIGNMENT_LEFT,

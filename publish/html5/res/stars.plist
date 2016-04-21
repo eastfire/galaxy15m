@@ -469,7 +469,7 @@
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>tech-multiverse-communication.png</key>
+            <key>tech-monument.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
@@ -484,7 +484,7 @@
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>tech-nanobot.png</key>
+            <key>tech-multiverse-communication.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
@@ -499,7 +499,7 @@
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>tech-psychohistory.png</key>
+            <key>tech-nanobot.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
@@ -514,7 +514,7 @@
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>tech-quantum-communication.png</key>
+            <key>tech-psychohistory.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
@@ -529,7 +529,7 @@
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>tech-resistance-cold.png</key>
+            <key>tech-quantum-communication.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
@@ -544,7 +544,7 @@
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>tech-resistance-heat.png</key>
+            <key>tech-resistance-cold.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
@@ -559,7 +559,7 @@
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>tech-space-elevator.png</key>
+            <key>tech-resistance-heat.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
@@ -574,7 +574,7 @@
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>tech-spirit-of-adventure.png</key>
+            <key>tech-space-elevator.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
@@ -589,7 +589,7 @@
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>tech-spirit-of-science.png</key>
+            <key>tech-spirit-of-adventure.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
@@ -604,7 +604,7 @@
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>tech-superconductor.png</key>
+            <key>tech-spirit-of-science.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
@@ -619,7 +619,7 @@
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>tech-telekinesis.png</key>
+            <key>tech-superconductor.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
@@ -634,7 +634,7 @@
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>tech-time-machine.png</key>
+            <key>tech-telekinesis.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
@@ -649,7 +649,7 @@
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>tech-virtual-reality.png</key>
+            <key>tech-time-machine.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
@@ -664,7 +664,7 @@
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>tech-warp-engine.png</key>
+            <key>tech-virtual-reality.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
@@ -679,7 +679,7 @@
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>tech-wing.png</key>
+            <key>tech-warp-engine.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
@@ -694,6 +694,21 @@
                 <key>textureRotated</key>
                 <false/>
             </dict>
+            <key>tech-wing.png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{96,96}</string>
+                <key>spriteSourceSize</key>
+                <string>{96,96}</string>
+                <key>textureRect</key>
+                <string>{{2,1948},{96,96}}</string>
+                <key>textureRotated</key>
+                <false/>
+            </dict>
         </dict>
         <key>metadata</key>
         <dict>
@@ -702,9 +717,9 @@
             <key>realTextureFileName</key>
             <string>stars.png</string>
             <key>size</key>
-            <string>{198,1948}</string>
+            <string>{198,2046}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:59e3ed51bf0d93d3f4b1a4cfd3c4e5bd:de546cac05488bab361606acfb8a962e:a283aa680c40f7aba299fc6537de2290$</string>
+            <string>$TexturePacker:SmartUpdate:6774a880ef60f8d7f0b51d8b9d01e9a1:24cadeb8c8050ca16fa1e6a0c25fd80e:a283aa680c40f7aba299fc6537de2290$</string>
             <key>textureFileName</key>
             <string>stars.png</string>
         </dict>

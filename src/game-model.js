@@ -28,7 +28,7 @@ var GameModel = Backbone.Model.extend({
                 ["anti-gravity","fusion-drive","clone-human","cure-cancer","psychohistory","spirit-of-adventure","gill","cyber-brain"],
                 ["anti-matter","cure-old","multiverse-communication","intelligent-dolphin","resistance-cold","resistance-heat","mind-control"],
                 ["warp-engine","intelligent-ape","wing","telekinesis"],
-                ["dyson-sphere","meaning-of-life","time-machine","group-mind"]
+                ["dyson-sphere","meaning-of-life","time-machine","group-mind","intelligent-cell","monument"]
             ],
             maxTechLevel: 5,
             maxLevelOneTech : 5,

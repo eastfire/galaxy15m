@@ -358,17 +358,19 @@ var IntelligentCell = TechModel.extend({
         return {
             displayName : "智能细胞",
             name: "intelligent-cell",
-            tier: 4,
-            cost: 6500,
-            types: [TECH_TYPE_BIOLOGICAL, TECH_TYPE_PSYCHOLOGY],
-            flavor: ""
+            tier: 5,
+            cost: 10000,
+            types: [TECH_TYPE_BIOLOGICAL],
+            flavor: "无所谓失去，也无所谓遗忘。\n一切都在血肉当中。\n瞬间即是永恒。"
         }
     },
     getDescription:function(){
-        return "加"+Math.round(this.effect*100)+"%人性";
+        return "当前分数乘以"+this.effect+"。人口变为0。游戏立刻结束";
     },
     onGain:function(){
-
+        gameModel.set("score", gameModel.get("score")*this.effect);
+        gameModel.set("totalPopulation",0);
+        gameModel.trigger("gameover");
     }
 });
 
@@ -437,6 +439,28 @@ var MeaningOfLife = TechModel.extend({
     },
     onGain:function(){
         gameModel.set("score", gameModel.get("score")+this.effect);
+    }
+});
+
+var Monument = TechModel.extend({
+    effect: 2001,
+    defaults:function(){
+        return {
+            displayName : "石碑",
+            name: "monument",
+            tier: 5,
+            cost: 2001,
+            types: [TECH_TYPE_PSYCHOLOGY, TECH_TYPE_ELECTRONIC],
+            flavor: ""
+        }
+    },
+    getDescription:function(){
+        return "当前每有10个星系未被殖民就加"+this.effect+"分";
+    },
+    onGain:function(){
+        var colonized = gameModel.getColonizedStarSystems().length;
+        var all = gameModel.getAllStarSystems().length;
+        gameModel.set("score", gameModel.get("score")+(all-colonized)*this.effect/10);
     }
 });
 
@@ -842,10 +866,12 @@ var CLASS_MAP = {
     "group-mind":GroupMind,
     "great-firewall": GreatFirewall,
     "intelligent-ape":IntelligentApe,
+    "intelligent-cell":IntelligentCell,
     "intelligent-dolphin":IntelligentDolphin,
     "meaning-of-life":MeaningOfLife,
     "memory-storage":MemoryStorage,
     "mind-control":MindControl,
+    "monument":Monument,
     "multiverse-communication":MultiverseCommunication,
     nanobot: Nanobot,
     psychohistory: Psychohistory,

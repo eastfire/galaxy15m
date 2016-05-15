@@ -14,6 +14,7 @@
         "src/libs/underscore-min.js",
         "src/libs/backbone-min.js",
         "src/libs/firebase.js",
+        "src/libs/av-core-mini-0.6.4.js",
         "src/libs/moment.min.js",
         "src/libs/zh-cn.js",
         "src/libs/utils.js",

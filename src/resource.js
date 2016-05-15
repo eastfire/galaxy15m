@@ -97,7 +97,7 @@ var texts = {
         "无",
         "稀薄",
         "正常",
-        "浓厚",
+        "浓厚"
     ],
     atmosphere_quality: [
         "无毒",

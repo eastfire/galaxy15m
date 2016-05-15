@@ -132,32 +132,95 @@ var GameOverLayer = cc.Layer.extend({
 var FIREBASE_URL = "https://galaxy15m.firebaseio.com"
 var TOP_SCORE_COUNT = 25
 
+var FirebaseStrategy = function(){
+    return {
+        init:function(){
+            this.scoreQuery = new Firebase(FIREBASE_URL+"/score").endAt().limit(TOP_SCORE_COUNT);
+        },
+        saveScore:function(score, success, error){
+            score[".priority"] = score.score;
+            score.timestamp = Firebase.ServerValue.TIMESTAMP;
+            var scoreRef = this.scoreQuery.ref();
+            scoreRef.push(score, success)
+        },
+        fetchScores:function(success,error){
+            this.scoreQuery.once("value",function(snapshot){
+                var filteredScore = [];
+                var scores = snapshot.val();
+                 _.each(scores,function(score){
+                     if ( score.name ) {
+                        filteredScore.unshift(score);
+                     }
+                 });
+                success(filteredScore);
+            })
+        }
+    }
+}
+
+var LeanCloudStrategy = function(){
+    return {
+        init:function(){
+            AV.initialize("uT4fcUcJRmM3ngfIFR307Olp-gzGzoHsz",
+                "KMx75E8XUnAxD4E8uCENAFDO");
+            this.ScoreObject = AV.Object.extend('Score');
+        },
+        saveScore:function(score, success, error){
+            var s = this.ScoreObject.new();
+            s.set(score);
+            s.save({
+                success:success,
+                error:error
+            });
+        },
+        fetchScores:function(success,error){
+            var query = new AV.Query(this.ScoreObject);
+            query.addDescending('score');
+//            query.addAscending('createdAt');
+            query.limit(TOP_SCORE_COUNT);
+            query.find({
+                success:function(scores) {
+                    success(_.map(scores,function(score){
+                        var jsonObj = score.toJSON();
+                        jsonObj.timestamp = score.createdAt;
+                        return jsonObj;
+                    }))
+                },
+                error:error
+            });
+        }
+    }
+}
+
+var currentStorageStrategy = new LeanCloudStrategy();
+
 var ScoreBoardLayer = cc.LayerColor.extend({
     ctor:function (options) {
         this._super(cc.color.WHITE);
 
-        this.scoreQuery = new Firebase(FIREBASE_URL+"/score").endAt().limit(TOP_SCORE_COUNT);
-        this.scoreRef = this.scoreQuery.ref();
         var self = this;
         this.score = null;
         this.__initList2();
+
+        currentStorageStrategy.init();
 
         if ( gameModel ) {
             var year = Math.round(gameModel.get("year")-START_YEAR);
             if ( year > MAX_YEAR ) year = MAX_YEAR;
             var score = {
                 name : "来自"+gameModel.get("homeName")+"的"+gameModel.get("playerName"),
-                ".priority": gameModel.get("score"),
                 rate: gameModel.get("colonizeRate"),
                 population: Math.floor(gameModel.get("totalPopulation")),
                 time: year,
                 score : gameModel.get("score"),
-                timestamp: Firebase.ServerValue.TIMESTAMP,
                 r: Math.random()
             }
             this.score = score;
-            this.scoreRef.push(score, function(){
+            currentStorageStrategy.saveScore(score, function(){
                 cc.log("score upload complete");
+                self.__fetchScore.call(self);
+            }, function(){
+                cc.log("score upload error");
                 self.__fetchScore.call(self);
             })
         } else {
@@ -212,19 +275,15 @@ var ScoreBoardLayer = cc.LayerColor.extend({
 
     __fetchScore:function(){
         var self = this;
-        this.scoreQuery.once("value",function(snapshot){
-            self.scores = snapshot.val();
-            var filteredScore = [];
-            _.each(self.scores,function(score){
-                if ( score.name ) {
-                    filteredScore.unshift(score);
-                }
-            });
-            self.scores = filteredScore;
+        currentStorageStrategy.fetchScores(function(scores){
+            cc.log("fetch Score success");
+            self.scores = scores;
             self.loading.removeFromParent(true);
 
             self.__renderList2.call(self);
-        })
+        }, function(){
+            //error
+        });
     },
 
     __initList2:function(){

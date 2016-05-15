@@ -224,6 +224,7 @@
                 <file name="src/libs/underscore-min.js"/>
                 <file name="src/libs/backbone-min.js"/>
                 <file name="src/libs/firebase.js"/>
+                <file name="src/libs/av-core-mini-0.6.4.js"/>
                 <file name="src/libs/moment.min.js"/>
                 <file name="src/libs/zh-cn.js"/>
                 <file name="src/libs/utils.js"/>
